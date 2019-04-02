@@ -1,10 +1,10 @@
 #include <kilombo.h>
-#include "main.h"
+#include "includes/main.h"
 
-#include "time_module.h"
-#include "game_module.h"
-#include "communication_module.h"
-#include "movement_module.h"
+#include "includes/time_module.h"
+#include "includes/game_module.h"
+#include "includes/communication_module.h"
+#include "includes/movement_module.h"
 
 #include <stdio.h> // for printf
 

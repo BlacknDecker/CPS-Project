@@ -1,6 +1,6 @@
 #include <kilombo.h>
-#include "main.h"
-#include "time_module.h"
+#include "includes/main.h"
+#include "includes/time_module.h"
 
 extern USERDATA * mydata;
 

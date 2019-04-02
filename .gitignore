@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Kilombo stuff
+endstate.json
+
+# Shell files
+witchSaysColor_UPDATE.sh

@@ -1,13 +1,13 @@
 #include <kilombo.h>
-#include "main.h"
-#include "communication_module.h"
+#include "includes/main.h"
+#include "includes/game_module.h"
 
 extern USERDATA * mydata;
 
 
 /***  SETUP ***/
 
-void setupCommunicationManager(){
+void setupGameManager(){
     // setup global variables
 }
 
@@ -17,7 +17,7 @@ void setupCommunicationManager(){
 /*
  Provide function description here
  */
-void communicationManager(){
+void gameManager(){
     // do stuff
 }
 
