@@ -9,6 +9,7 @@ The Kilombo simulator is documented [here](https://github.com/JIC-CSB/kilombo/bl
 ## Project Folders Structure
 
 CPS-Project             <br />
+|						<br />
 |_ src                  <br />  
 |	|_ includes         <br />
 |	|_ kilombo_settings <br />
