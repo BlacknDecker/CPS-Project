@@ -1,6 +1,10 @@
 
 /************* CONSTANTS ********************/
 
+// BOOLEAN
+#define TRUE 1
+#define FALSE 0
+
 // COLORS
 #define OFF RGB(0,0,0)
 #define RED RGB(3,0,0)
@@ -24,6 +28,9 @@
 #define MAX_OUT_QUEUE 3
 #define TIMEOUT 64
 #define DATA_LIFETIME 48
+
+// TIME
+#define TIMER_NUMBER 3
 
 
 /************* ENUMS ********************/
@@ -81,7 +88,7 @@ typedef struct
 
   /*** TIME ***/
   
-  uint8_t timer[3];
+  uint8_t timer[TIMER_NUMBER];
 
   /*** *** *** ***/
 
