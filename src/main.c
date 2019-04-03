@@ -6,8 +6,6 @@
 #include "includes/communication_module.h"
 #include "includes/movement_module.h"
 
-#include <stdio.h> // for printf
-
 
 REGISTER_USERDATA(USERDATA)
 

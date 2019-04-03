@@ -8,6 +8,7 @@ extern USERDATA * mydata;
 /***  SETUP ***/
 
 void setupMovementManager(){
+	printf("setupMovementManager\n"); //Stub
     // setup global variables
 }
 
@@ -18,10 +19,12 @@ void setupMovementManager(){
  Provide function description here
  */
 void movementManager(){
+	printf("movementManager\n"); //Stub
     // do stuff
 }
 
 // insert functions that exposes services to the other modules here
+// Don't forget to update the header file!
 
 
 /*** SUPPORT FUNCTIONS ***/

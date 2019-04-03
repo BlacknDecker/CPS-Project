@@ -8,6 +8,7 @@ extern USERDATA * mydata;
 /***  SETUP ***/
 
 void setupGameManager(){
+	printf("SetupGameManager\n"); //Stub
     // setup global variables
 }
 
@@ -18,10 +19,12 @@ void setupGameManager(){
  Provide function description here
  */
 void gameManager(){
+	printf("gameManager\n"); //Stub
     // do stuff
 }
 
 // insert functions that exposes services to the other modules here
+// Don't forget to update the header file!
 
 
 /*** SUPPORT FUNCTIONS ***/

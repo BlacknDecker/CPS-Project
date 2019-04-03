@@ -8,6 +8,7 @@ extern USERDATA * mydata;
 /***  SETUP ***/
 
 void setupCommunicationManager(){
+	printf("SetupCommunicationManager\n"); //Stub
     // setup global variables
 }
 
@@ -18,10 +19,12 @@ void setupCommunicationManager(){
  Provide function description here
  */
 void communicationManager(){
+	printf("communicationManager\n"); //Stub
     // do stuff
 }
 
 // insert functions that exposes services to the other modules here
+// Don't forget to update the header file!
 
 
 /*** SUPPORT FUNCTIONS ***/
