@@ -35,9 +35,10 @@ rm *.o
 if [ "$?" -lt "2" ]
 then
    # Move executable file in exe folder
-   mv -fv "${execFileName}.exe" ../exe 
+   mkdir -p ../exe 									# Create folder if not exists
+   mv -fv "${execFileName}.exe" ../exe 				# Move executable
    echo "Running executable: ${execFileName}.exe"
-   ../exe/"${execFileName}.exe"   #Execute the builded file
+   ../exe/"${execFileName}.exe"   					# Execute the builded file
 else
    echo "Build Error!!!"
 fi
