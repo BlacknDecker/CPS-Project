@@ -9,11 +9,11 @@ The Kilombo simulator is documented [here](https://github.com/JIC-CSB/kilombo/bl
 ## Project Folders Structure
 
 CPS-Project
-|_ src  
-|	|_ includes  
-|	|_ kilombo_settings  
-|   
-|_ wiki-images  
+|_ src                  <br />  
+|	|_ includes         <br />
+|	|_ kilombo_settings <br />
+|                       <br />
+|_ wiki-images          <br />
 
 
 * **root folder** contains this readme file and some shell script to automate the build process.
