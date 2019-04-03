@@ -18,6 +18,7 @@ void setupTimeManager(){
 
 uint8_t setTimer(uint8_t clock, uint8_t value){
 	mydata->timer[clock] = value;
+	return value;
 }
 
 uint8_t isElapsed(uint8_t clock){
