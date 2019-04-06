@@ -30,103 +30,94 @@
 #define TIMEOUT 64
 #define DATA_LIFETIME 48
 
+// STANDARD MESSAGES
+#define NO_MESSAGE 0
+#define PING 1 
+
 // TIME
-#define TIMER_NUMBER 3
+#define TIMERS_NUMBER 3
 
 
 /************* ENUMS ********************/
 
 // MOTION TYPE
 typedef enum {
-  STOP,
-  FORWARD,
-  LEFT,
-  RIGHT
+    STOP,
+    FORWARD,
+    LEFT,
+    RIGHT
 } motion_t;
 
 
 // CLOCKS TYPES
 typedef enum {
-  FLASH_C,
-  MOVE_C,
-  COMMUNICATION_C
+    FLASH_C,
+    MOVE_C,
+    COMMUNICATION_C
 } clock_type_t;
 
 
-/*** Message Exchange States ***/
+// MESSAGE MODULE STATES
 typedef enum{
-  PINGING,
-  FLOOD,
-  FAIL,
-  MESSAGE_DELIVERED
-} message_ex_state_t;
+    PINGING,
+    BUSY
+} message_exchange_state_t;
 
 
-/*** Message Sending Outcome ***/
-// Return type for the sending function
+// Return types for message sending function
 typedef enum{
   FAILED,
   BUSY,
   IN_PROGRESS,
-  DELIVERED,
   DONE
 } message_sending_t;
 
 
-/*** Message Payload ***/
-typedef enum{
-  NO_MESSAGE,
-  PING,
-  SOMEDATA            // test
-} message_payload_t;
-
-
-
 /************* GLOBAL VARIABLES ********************/
 
-typedef struct 
-{
+typedef struct {
 
-  /*** TIME ***/
-  
-  uint8_t timer[TIMER_NUMBER];
+    /*** TIME ***/
+    
+    uint8_t timer[TIMERS_NUMBER];
 
-  /*** *** *** ***/
+    /*** *** *** ***/
 
-  /*** COLORS ***/
+    /*** COLORS ***/
 
-  uint8_t color_code[8];
+    uint8_t color_code[8];
 
-  /*** *** *** ***/
+    /*** *** *** ***/
 
-  /*** GAME ***/
+    /*** GAME ***/
 
-  // Put variables here
+    // Put variables here
 
-  /*** *** *** ***/
+    /*** *** *** ***/
 
-  /*** DATA ARCHIVE ***/
+    /*** DATA ARCHIVE ***/
 
-  uint8_t neighbours[MAX_NEIGHBOURS];     // neighbours[ID] == 1 if kilobot_ID is in range, else == 0
-  uint8_t distance[MAX_NEIGHBOURS];       // if neighbourss[ID] is in range, show distance, else == MAX_INT
-  uint8_t mex_lifetime[MAX_NEIGHBOURS];   // Time from the last time a mex arrived (in kiloticks)
-  uint8_t mex_payload[MAX_NEIGHBOURS];    // contains payload of the last mex received from the IDth bot
+    uint8_t neighbours[MAX_NEIGHBOURS];     // neighbours[ID] == 1 if kilobot_ID is in range, else == 0
+    uint8_t distance[MAX_NEIGHBOURS];       // if neighbourss[ID] is in range, show distance, else == MAX_INT
+    uint8_t msg_lifetime[MAX_NEIGHBOURS];   // Time from the last time a mex arrived (in kiloticks)
+    uint8_t msg_payload[MAX_NEIGHBOURS];    // contains payload of the last mex received from the IDth bot
 
-  /*** *** *** ***/
+    /*** *** *** ***/
 
-  /*** MESSAGES ***/
+    /*** MESSAGES ***/
 
-  message_ex_state_t mex_ex_state;        // Message Exchange State (to move in the finite state machine)
-  message_t out_queue[MAX_OUT_QUEUE];     // Contains the messages to transmit
-  message_t outgoing_mex;                 // Message to transmit
+    uint8_t new_message_arrived;                // Flag to notify new messages
+    message_exchange_state_t msg_ex_state;      // Message Exchange State (to move in the finite state machine)
+    uint8_t out_queue[MAX_OUT_QUEUE];           // Contains the messages waiting to be transmitted 
+    uint8_t outgoing_message;                   // Message to transmit
 
-  /*** *** *** ***/
+    /*** *** *** ***/
 
-  /*** MOVEMENT ***/
+    /*** MOVEMENT ***/
 
-  // Put variables here
+    // Put variables here
 
-  /*** *** *** ***/
+    /*** *** *** ***/
 
 
 } USERDATA;
