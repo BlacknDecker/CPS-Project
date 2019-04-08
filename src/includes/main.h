@@ -60,17 +60,19 @@ typedef enum {
 // MESSAGE MODULE STATES
 typedef enum{
     PINGING,
-    BUSY
+    BUSY,
+    DONE
 } message_exchange_state_t;
 
 
 // Return types for message sending function
 typedef enum{
-  FAILED,
-  BUSY,
-  IN_PROGRESS,
-  DONE
-} message_sending_t;
+    ERROR,
+    START,
+    WAIT,
+    IN_PROGRESS,
+    FINISH
+} msg_flood_state_t;
 
 
 /************* GLOBAL VARIABLES ********************/
@@ -109,7 +111,7 @@ typedef struct {
     uint8_t new_message_arrived;                // Flag to notify new messages
     message_exchange_state_t msg_ex_state;      // Message Exchange State (to move in the finite state machine)
     uint8_t out_queue[MAX_OUT_QUEUE];           // Contains the messages waiting to be transmitted 
-    uint8_t outgoing_message;                   // Message to transmit
+    message_t outgoing_message;                 // Message to transmit
 
     /*** *** *** ***/
 

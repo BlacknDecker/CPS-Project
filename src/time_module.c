@@ -8,7 +8,7 @@ extern USERDATA * mydata;
 /***  SETUP ***/
 
 void setupTimeManager(){
-	for(int i=0; i<TIMER_NUMBER; i++)
+	for(int i=0; i<TIMERS_NUMBER; i++)
 		mydata->timer[i] = 0;
 }
 

@@ -32,5 +32,3 @@ int main() {
   kilo_start(setup, loop);
   return 0;
 }
-
-
