@@ -36,6 +36,7 @@ if [ "$?" -lt "2" ]
 then
    # Move executable file in exe folder
    mkdir -p ../exe 									# Create folder if not exists
+   rm ../exe/*.exe 									# Remove old exe
    mv -fv "${execFileName}.exe" ../exe 				# Move executable
    echo "Running executable: ${execFileName}.exe"
    ../exe/"${execFileName}.exe"   					# Execute the builded file

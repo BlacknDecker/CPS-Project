@@ -7,14 +7,14 @@
 #define FALSE 0
 
 // COLORS
-#define OFF RGB(0,0,0)
-#define RED RGB(3,0,0)
-#define GREEN RGB(0,3,0)
-#define BLUE RGB(0,0,3)
-#define WHITE RGB(3,3,3)
-#define PURPLE RGB(1,0,1)
-#define YELLOW RGB(2,2,0)
-#define ORANGE RGB(2,1,0)
+#define OFF 0
+#define RED 1
+#define GREEN 2
+#define BLUE 3
+#define WHITE 4
+#define PURPLE 5
+#define YELLOW 6
+#define ORANGE 7
 
 // DISTANCE ZONEs
 #define DANGER_D 45
@@ -51,7 +51,7 @@ typedef enum {
 
 // CLOCKS TYPES
 typedef enum {
-    FLASH_C,
+    BLINK_C,
     MOVE_C,
     COMMUNICATION_C
 } clock_type_t;
@@ -75,6 +75,13 @@ typedef enum{
 } msg_flood_state_t;
 
 
+// Blink phases
+typedef enum{
+    BLINK_OFF,
+    BLINK_ON,
+    STEADY
+} blink_state_t;
+
 /************* GLOBAL VARIABLES ********************/
 
 typedef struct {
@@ -88,6 +95,7 @@ typedef struct {
     /*** COLORS ***/
 
     uint8_t color_code[8];
+    blink_state_t blink_state;
 
     /*** *** *** ***/
 

@@ -4,7 +4,7 @@
 # configured below, these needs to be adapted to the system.
 
 #list of c files in this project
-SOURCES=main.c communication_module.c game_module.c movement_module.c time_module.c 
+SOURCES=main.c communication_module.c color_module.c game_module.c movement_module.c time_module.c 
 
 #name of the executable file
 EXECUTABLE=witchSaysColor.exe

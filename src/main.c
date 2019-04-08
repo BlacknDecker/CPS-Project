@@ -2,6 +2,7 @@
 #include "includes/main.h"
 
 #include "includes/time_module.h"
+#include "includes/color_module.h"
 #include "includes/game_module.h"
 #include "includes/communication_module.h"
 #include "includes/movement_module.h"
@@ -21,6 +22,7 @@ void loop(){
 
 void setup(){
   setupTimeManager();
+  setupColors();
   setupGameManager();
   setupCommunicationManager();
   setupMovementManager();
