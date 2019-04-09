@@ -35,7 +35,7 @@
 #define PING 1 
 
 // TIME
-#define TIMERS_NUMBER 3
+#define TIMERS_NUMBER 4
 
 
 /************* ENUMS ********************/
@@ -53,7 +53,8 @@ typedef enum {
 typedef enum {
     BLINK_C,
     MOVE_C,
-    COMMUNICATION_C
+    COMMUNICATION_C,
+    GAME_C
 } clock_type_t;
 
 
@@ -82,6 +83,16 @@ typedef enum{
     STEADY
 } blink_state_t;
 
+
+// Game States
+typedef enum{
+    START_PHASE,
+    WAIT_PHASE,
+    FLOOD_PHASE,
+    END_PHASE
+} game_state_t;
+
+
 /************* GLOBAL VARIABLES ********************/
 
 typedef struct {
@@ -96,11 +107,14 @@ typedef struct {
 
     uint8_t color_code[8];
     blink_state_t blink_state;
+    uint8_t my_color;                       // Code color of the color that i'm currently displaying
 
     /*** *** *** ***/
 
     /*** GAME ***/
 
+    game_state_t game_state;                // Game state
+    msg_flood_state_t game_msg_state;       // Flooding message state
     // Put variables here
 
     /*** *** *** ***/
