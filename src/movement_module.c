@@ -10,7 +10,6 @@ extern USERDATA * mydata;
 
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
-	resetBlink(getColor(OFF));			// Test
     // setup global variables
 }
 
@@ -21,8 +20,7 @@ void setupMovementManager(){
  Provide function description here
  */
 void movementManager(){
-	printf("movementManager\n"); 		//Stub
-	blink(16, 32, getColor(WHITE));		// Test
+	// printf("movementManager\n"); 		//Stub
     // do stuff
 }
 

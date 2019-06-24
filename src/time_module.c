@@ -22,10 +22,13 @@ uint8_t setTimer(uint8_t clock, uint8_t value){
 }
 
 uint8_t isElapsed(uint8_t clock){
+	// if(kilo_uid == 0){ printf(" > CLOCK %d IS ELAPSED? ", clock); }
 	if(mydata->timer[clock]){
 		mydata->timer[clock] -= 1;
+		// if(kilo_uid == 0){ printf(" > NO, VALUE DECRESED: %d\n", mydata->timer[clock]); }
 		return FALSE;
 	}else{
+		// if(kilo_uid == 0){ printf(" > YES, VALUE: %d\n\n", mydata->timer[clock]); }
 		return TRUE;
 	}
 }
@@ -41,6 +44,12 @@ uint8_t waitTime(uint8_t clock, uint8_t kiloTicks){
 		setTimer(clock, kiloTicks);
 		return FALSE;
 	}
+}
+
+
+// Set a clock to zero
+void resetClock(uint8_t clock){
+	mydata->timer[clock] = 0;
 }
 
 

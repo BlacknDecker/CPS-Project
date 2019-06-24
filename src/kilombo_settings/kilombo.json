@@ -1,7 +1,8 @@
 {
-    "botName" : "Orbit bot",
+    "botName" : "Disperse bot",
     "randSeed" : 1,
-    "nBots" : 2,
+    "nBots" : 10,
+    "formation" : "circle",
     "timeStep" : 0.0416666,
     "__note" : "0.04166 is 24 FPS which matches the movie frame rate",
     "__timeStep" : 0.03225,

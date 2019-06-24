@@ -18,11 +18,13 @@ void setupCommunicationManager(){
     // distance
     for(int i=0; i<MAX_NEIGHBOURS; i++){ mydata->distance[i] = MAX_INT; }
     // last message
-    for(int i=0; i<MAX_NEIGHBOURS; i++){ mydata->msg_payload[i] = NO_MESSAGE; }
+    for(int i=0; i<MAX_NEIGHBOURS; i++){ mydata->msg_payload[i] = VOID_MSG; }
     // out_queue
-    for(int i=0; i<MAX_OUT_QUEUE; i++){ mydata->out_queue[i] = NO_MESSAGE; }
+    for(int i=0; i<MAX_OUT_QUEUE; i++){ mydata->out_queue[i] = VOID_MSG; }
+    // last message received
+    mydata->last_msg_payload = 0;
     // outgoing message
-    setup_message(&mydata->outgoing_message, PING);
+    setup_message(&mydata->outgoing_message, PING_MSG);
     
     /** CALLBACKS **/
     kilo_message_tx = message_sender;
@@ -61,6 +63,7 @@ void floodMessage(uint8_t msg_payload, msg_flood_state_t * flood_state){
 /************ FLOODING STATES ************************/
 
 msg_flood_state_t startFlooding(uint8_t msg_payload){
+    //if(kilo_uid == 1){ printf(" > START FLOODING\n\n"); }
     pushRequest(msg_payload);                           // Push message in out queue
     if( mydata->msg_ex_state == PINGING ){              // Check if i will wait in queue
         return IN_PROGRESS;
@@ -70,6 +73,7 @@ msg_flood_state_t startFlooding(uint8_t msg_payload){
 }
 
 msg_flood_state_t waitFlooding(uint8_t msg_payload){
+    //if(kilo_uid == 1){ printf(" > WAIT FLOODING\n\n"); }
     uint8_t out_payload = getMessagePayload(mydata->outgoing_message);  // Get Outgoing message payload
     if(out_payload == msg_payload){ 
         return IN_PROGRESS;
@@ -80,6 +84,7 @@ msg_flood_state_t waitFlooding(uint8_t msg_payload){
 
 msg_flood_state_t floodingProgress(uint8_t msg_payload){
     if(mydata->msg_ex_state == DONE){
+        //if(kilo_uid == 1){ printf(" > FINISH FLOODING\n\n"); }
         return FINISH;
     }else{
         return IN_PROGRESS;
@@ -101,7 +106,7 @@ void sendingAlgorithm(){
 void setupPinging(){
     // printf("> %d PINGING\n", kilo_uid);
     mydata->msg_ex_state = PINGING;                     // Change state
-    setup_message(&mydata->outgoing_message, PING);     //Change the transmitting msg
+    setup_message(&mydata->outgoing_message, PING_MSG);     //Change the transmitting msg
 }
 
 // Flood a message for a while
@@ -168,9 +173,10 @@ uint8_t isNewMessage(uint8_t sender, uint8_t payload){
 }
 
 void notifyNewMessage(uint8_t sender){
-    if(mydata->msg_payload[sender] != NO_MESSAGE){
-        if(mydata->msg_payload[sender] != PING){
-            mydata->new_message_arrived = TRUE;         // Set flag to notify 
+    if(mydata->msg_payload[sender] != VOID_MSG){
+        if(mydata->msg_payload[sender] != PING_MSG){
+            mydata->last_msg_payload = mydata->msg_payload[sender]; // Update 
+            mydata->new_message_arrived = TRUE;                     // Set flag to notify 
         }
     }
 }
@@ -183,7 +189,7 @@ void pushRequest(uint8_t msg_payload){
         if(mydata->out_queue[i] == 0){            // If the slot is free
             mydata->out_queue[i] = msg_payload;   // Insert message
             // printf("> %d PUSHING REQUEST\n", kilo_uid);
-            printMessageArchive();                // Debug
+            // printMessageArchive();                // Debug
             return;                               // End
         }
     }
@@ -197,7 +203,8 @@ void uploadMessage(){
             // printf("> %d UPLOADING WORK!\n", kilo_uid);
             setup_message(&mydata->outgoing_message, mydata->out_queue[i]);  // Copy msg in the message to transmit
             startCountdown();                                                // Reset timeout timer
-            mydata->out_queue[i] = NO_MESSAGE;                               // Remove message from the queue
+            mydata->out_queue[i] = VOID_MSG;                                 // Remove message from the queue
+            mydata->msg_ex_state = BUSY;
             return;                                                          // Get only a message
         }
     }
@@ -213,7 +220,7 @@ void checkExpiredData(){
                 if(kilo_uid==0){ printf("> %d: My neighbour %d is expired -> lifetime: %d\n", kilo_uid, i, mydata->msg_lifetime[i]); } // DEBUG
                 mydata->neighbours[i]   = FALSE;
                 mydata->distance[i]     = MAX_INT;
-                mydata->msg_payload[i]  = NO_MESSAGE;
+                mydata->msg_payload[i]  = VOID_MSG;
                 if(kilo_uid==0){ printf("Updated neighbours list: "); }                         // DEBUG
                 if(kilo_uid==0){ printNeighbourList(); }                                        // DEBUG          
             }
