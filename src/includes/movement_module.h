@@ -14,8 +14,9 @@ void follow();
 
 uint8_t collisionDetected();
 void avoidCollisions();
-void updateMinDistance(distance_measurement_t *);
-
+void updateRunnerInfo();
+void lookForARunner();
+void updateDistance(uint8_t myrunner);
 
 
 

@@ -111,8 +111,6 @@ void follow(){
     }
 }
 
-/******** COLLISION AVOIDANCE ****************/
-
 uint8_t collisionDetected(){
 	uint8_t ret = 0;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
@@ -129,27 +127,34 @@ void avoidCollisions(){
 	}
 }
 
-void updateRunnerInfo(distance_measurement_t *d){
+void updateRunnerInfo(){
 	uint8_t myrunner = mydata->runner.runner_id;
 	if( myrunner == -1){
-		uint8_t d = MAX_INT;
-		for(int i=0; i<MAX_NEIGHBOURS; i++){ 
-			if(mydata->distance[i]<d && mydata->msg_payload[i]==mydata->runner_color){	// the msg_payload contains the color of the bot in the game phase
-				d = mydata->distance[i];
-				myrunner = i;
-			}
-
-		}
-		mydata->runner = (runner_t){myrunner, d, d, 0, 1};
+		lookForARunner();
 	}else{
-		uint8_t distance = mydata->distance[myrunner];
-		if(distance < MAX_INT){
-			mydata->runner.in_range = 1;
-			mydata->runner.last_distance = mydata->runner.new_distance;
-			mydata->runner.new_distance = distance;
-		}else{
-			mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
-		}
+		updateDistance(myrunner);
 	}
 }
 
+void lookForARunner(){
+	uint8_t myrunner = -1;
+	uint8_t d = MAX_INT;
+	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
+		if(mydata->distance[i]<d && mydata->msg_payload[i]==mydata->runner_color){	// the msg_payload contains the color of the bot in the game phase
+			d = mydata->distance[i];
+			myrunner = i;
+		}
+	}
+	mydata->runner = (runner_t){myrunner, d, d, 0, 1};
+}
+
+void updateDistance(uint8_t myrunner){
+	uint8_t distance = mydata->distance[myrunner];
+	if(distance < MAX_INT){
+		mydata->runner.in_range = 1;
+		mydata->runner.last_distance = mydata->runner.new_distance;
+		mydata->runner.new_distance = distance;
+	}else{
+		mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
+	}
+}
