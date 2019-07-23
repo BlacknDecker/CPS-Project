@@ -9,6 +9,7 @@ void resetBlink();														// Reset Blink values (NB: call after done blink
 void setStableColor(uint8_t rgbColor);									// Reset to a steady color
 uint8_t getColorFromMessage(uint8_t msg);								// Convert a  color message into an rgb color value	
 uint8_t colorToMessage(uint8_t rgbColor);								// Convert a color into its message code
+uint8_t getRandomColor();												// Get a random color (from the 5 availables). Returns the rgb color choosed.
 
 // ...
 

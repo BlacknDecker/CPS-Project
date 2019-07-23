@@ -87,6 +87,20 @@ uint8_t colorToMessage(uint8_t rgbColor){
 	}
 }
 
+// Get a random color (from the 5 availables). Returns the color choosed.
+// NB: use rand_hard, so it is slow.
+uint8_t getRandomColor(){
+	// Create a random number 
+	rand_seed(rand_hard());
+	uint8_t rand_code = rand_soft();
+	rand_code = (rand_code % 7)+3;		// Force it between 3 and 7 (the colors codes)
+	// Actually get the color
+	uint8_t rand_clr = getColorFromMessage(rand_code);
+	if(rand_clr == OFF){ rand_clr = BLUE; }	// Eventually recover from errors
+	return rand_clr;
+}
+
+
 // insert functions that exposes services to the other modules here
 // Don't forget to update the header file!
 
