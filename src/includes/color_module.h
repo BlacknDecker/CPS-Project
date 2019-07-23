@@ -10,7 +10,7 @@ void setStableColor(uint8_t rgbColor);									// Reset to a steady color
 uint8_t getColorFromMessage(uint8_t msg);								// Convert a  color message into an rgb color value	
 uint8_t colorToMessage(uint8_t rgbColor);		
 //----New----
-uint8_t colorToNum(uint8_t r_num);							// Convert a color into its message code
+void colorToNum(uint8_t r_num);							// Convert a color into its message code
 
 // ...
 
