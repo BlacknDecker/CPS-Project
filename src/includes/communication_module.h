@@ -20,6 +20,7 @@ msg_flood_state_t floodingProgress(uint8_t msg_payload);
 // SEND
 void sendingAlgorithm();
 void setupPinging();
+void setupColor();
 void floodingMessage();
 void setup_message(message_t * msg, uint8_t payload);
 message_t * message_sender();

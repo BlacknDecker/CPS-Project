@@ -2,6 +2,7 @@
 #include "includes/main.h"
 #include "includes/color_module.h"
 #include "includes/time_module.h"
+#include "includes/movement_module.h"
 
 extern USERDATA * mydata;
 
@@ -11,17 +12,68 @@ extern USERDATA * mydata;
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
     // setup global variables
-}
+    if(mydata->my_role == WITCH){
+    	return;
+    }
+    if(mydata->my_color == mydata->runner_color){
+    	mydata->my_role = RUNNER;
+    } else {
+    	mydata->my_role = CATCHER;
+    	mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
+    }
+ }
 
 
 /*** CORE FUNCTIONS ***/
 
 /*
- Provide function description here
+ It moves the kilobot depending on its role
  */
 void movementManager(){
-	// printf("movementManager\n"); 		//Stub
-    // do stuff
+
+
+	
+	if(waitTime(MOVE_C, 100)){
+		uint8_t myrole = mydata->my_role;
+    	if(myrole == RUNNER){
+    		run();
+    	} else if(myrole == CATCHER){
+    		updateRunnerInfo();
+    		searchAndCatch();
+    	}
+    
+    	//update();
+	}
+	avoidCollisions();
+}
+
+void setMotion(motion_t new_motion){
+  switch(new_motion) {
+  case STOP:
+    set_motors(0,0);
+    break;
+  case FORWARD:
+    set_motors(kilo_turn_left, kilo_turn_right);
+    break;
+  case LEFT:
+    set_motors(kilo_turn_left, 0); 
+    break;
+  case RIGHT:
+    set_motors(0, kilo_turn_right); 
+    break;
+  }
+}
+
+void moveRandomly(){
+  uint8_t random = rand_soft() % 3; // 0 <= random < 3
+  switch(random){
+      case 0:
+        setMotion(LEFT); break;
+      case 1:
+        setMotion(FORWARD); break;
+      case 2:
+        setMotion(RIGHT); break;
+    }
 }
 
 // insert functions that exposes services to the other modules here
@@ -30,5 +82,74 @@ void movementManager(){
 
 /*** SUPPORT FUNCTIONS ***/
 
-// insert support ("private") functions here
+void run(){
+	moveRandomly();
+}
+
+void searchAndCatch(){
+
+  if(mydata->runner.in_range == 0){    // the runner is out of range
+    moveRandomly();
+  } else{                              // the runner is in range
+    follow();
+  }              
+
+}
+
+// if the runner is getting far, the catcher changes direction
+void follow(){
+  if(mydata->runner.last_distance < mydata->runner.new_distance) {
+  	mydata->runner.last_direction = (mydata->runner.last_direction + 1) % 3;
+  }
+  switch(mydata->runner.last_direction){
+    case 0:
+		setMotion(LEFT); break;
+    case 1:
+        setMotion(FORWARD); break;
+    case 2:
+        setMotion(RIGHT); break;
+    }
+}
+
+/******** COLLISION AVOIDANCE ****************/
+
+uint8_t collisionDetected(){
+	uint8_t ret = 0;
+	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
+		if(mydata->distance[i] <= DANGER_D){
+			ret = 1;
+		}
+	}
+	return ret;
+}
+
+void avoidCollisions(){
+	if(collisionDetected()){		// DANGER AREA --> STOP	
+    	setMotion(STOP);
+	}
+}
+
+void updateRunnerInfo(distance_measurement_t *d){
+	uint8_t myrunner = mydata->runner.runner_id;
+	if( myrunner == -1){
+		uint8_t d = MAX_INT;
+		for(int i=0; i<MAX_NEIGHBOURS; i++){ 
+			if(mydata->distance[i]<d && mydata->msg_payload[i]==mydata->runner_color){	// the msg_payload contains the color of the bot in the game phase
+				d = mydata->distance[i];
+				myrunner = i;
+			}
+
+		}
+		mydata->runner = (runner_t){myrunner, d, d, 0, 1};
+	}else{
+		uint8_t distance = mydata->distance[myrunner];
+		if(distance < MAX_INT){
+			mydata->runner.in_range = 1;
+			mydata->runner.last_distance = mydata->runner.new_distance;
+			mydata->runner.new_distance = distance;
+		}else{
+			mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
+		}
+	}
+}
 
