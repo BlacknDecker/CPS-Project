@@ -87,6 +87,17 @@ uint8_t colorToMessage(uint8_t rgbColor){
 	}
 }
 
+// changes the random number to color
+void colorToNum(uint8_t r_num){
+	switch(r_num){
+		case 0: return setColor(BLUE);
+		case 1: return setColor(PURPLE);
+		case 2: return setColor(YELLOW);
+		case 3: return setColor(ORANGE);
+		}
+}
+
+
 // insert functions that exposes services to the other modules here
 // Don't forget to update the header file!
 

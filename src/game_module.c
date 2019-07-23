@@ -43,7 +43,25 @@ game_state_t startPhase(){
 	if(kilo_uid == 0){
 		setColor(WHITE);
 	}else{
-		setColor(RED);
+		if(kilo_uid == 1){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 2){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 3){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 4){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 5){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 6){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 7){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 8){
+		colorToNum(rand() % 4;)}
+		if(kilo_uid == 9){
+		colorToNum(rand() % 4;)}
+
 	}
 	printf("> %d - (1) Start!\n", kilo_uid);  // DEBUG
 	return WAIT_PHASE;
