@@ -47,7 +47,7 @@ game_state_t startPhase(){
 		for (uint8_t localBot = 1; localBot < 10; localBot++){
 			if(kilo_uid == localBot){
 				uint8_t randomGeneratedNumber = getRandomNumber(3,4);
-				numberToColor(randomGeneratedNumber);
+				setColor(numberToColor(randomGeneratedNumber));
 				printf("> %d - (1) Start! %d \n", kilo_uid, randomGeneratedNumber );
 			}
 
@@ -85,8 +85,15 @@ game_state_t waitPhase(){
 }
 
 game_state_t floodPhase(){
+
+	uint8_t randomGeneratedNumber = getRandomNumber(3,4); //picking a color as the runner to flood it.
+	
+
 	if(kilo_uid == 0){									// Coordinator
-		floodMessage(colorToMessage(PURPLE), &mydata->game_msg_state);	// Flood a message with a color
+
+
+		floodMessage(colorToMessage(numberToColor(randomGeneratedNumber)), &mydata->game_msg_state);	// Flood a message with a color
+
 		if(mydata->game_msg_state == FINISH){
 			setStableColor(GREEN);
 			printf("> %d - (3)  Ended Flooding\n", kilo_uid);

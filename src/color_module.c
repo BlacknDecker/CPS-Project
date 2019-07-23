@@ -88,14 +88,16 @@ uint8_t colorToMessage(uint8_t rgbColor){
 }
 
 // changes the random number to color
-void numberToColor(uint8_t r_num){
+ uint8_t numberToColor(uint8_t r_num){
 	switch(r_num){
-		case 3: return setColor(BLUE);
-		case 4: return setColor(PURPLE);
-		case 5: return setColor(YELLOW);
-		case 6: return setColor(ORANGE);
+		case 3: return BLUE;
+		case 4: return PURPLE;
+		case 5: return YELLOW;
+		case 6: return ORANGE;
+		default: return OFF;
 		}
 }
+
 
 uint8_t getRandomNumber(uint8_t from,uint8_t to){
 	// Create a random number 
