@@ -43,24 +43,15 @@ game_state_t startPhase(){
 	if(kilo_uid == 0){
 		setColor(WHITE);
 	}else{
-		if(kilo_uid == 1){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 2){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 3){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 4){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 5){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 6){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 7){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 8){
-		colorToNum(rand() % 4;)}
-		if(kilo_uid == 9){
-		colorToNum(rand() % 4;)}
+
+		for (uint8_t localBot = 1; localBot < 10; localBot++){
+			if(kilo_uid == localBot){
+				uint8_t randomGeneratedNumber = getRandomNumber(3,4);
+				numberToColor(randomGeneratedNumber);
+				printf("> %d - (1) Start! %d \n", kilo_uid, randomGeneratedNumber );
+			}
+
+		}
 
 	}
 	printf("> %d - (1) Start!\n", kilo_uid);  // DEBUG

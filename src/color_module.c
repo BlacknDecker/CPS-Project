@@ -88,14 +88,26 @@ uint8_t colorToMessage(uint8_t rgbColor){
 }
 
 // changes the random number to color
-void colorToNum(uint8_t r_num){
+void numberToColor(uint8_t r_num){
 	switch(r_num){
-		case 0: return setColor(BLUE);
-		case 1: return setColor(PURPLE);
-		case 2: return setColor(YELLOW);
-		case 3: return setColor(ORANGE);
+		case 3: return setColor(BLUE);
+		case 4: return setColor(PURPLE);
+		case 5: return setColor(YELLOW);
+		case 6: return setColor(ORANGE);
 		}
 }
+
+uint8_t getRandomNumber(uint8_t from,uint8_t to){
+	// Create a random number 
+	rand_seed(rand_hard());
+	uint8_t rand_code = rand_soft();
+	rand_code = (rand_code % to)+from;		// Force it between "from" and "to" (in this case, the colors codes 3 to 7)
+    return rand_code;
+}
+
+
+
+
 
 
 // insert functions that exposes services to the other modules here
