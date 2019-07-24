@@ -140,7 +140,7 @@ void lookForARunner(){
 	uint8_t myrunner = -1;
 	uint8_t d = MAX_INT;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
-		if(mydata->distance[i]<d && mydata->msg_payload[i]==mydata->runner_color){	// the msg_payload contains the color of the bot in the game phase
+		if(mydata->distance[i]<d && mydata->msg_payload[i]==RUNNER){	// the msg_payload contains the role of the bot in the game phase
 			d = mydata->distance[i];
 			myrunner = i;
 		}
