@@ -102,6 +102,10 @@ typedef enum{
     START_PHASE,
     WAIT_PHASE,
     FLOOD_PHASE,
+    WIN_PHASE,
+    LOSE_PHASE,
+    GAME_PHASE,
+    STANDBY_PHASE,
     END_PHASE
 } game_state_t;
 

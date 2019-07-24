@@ -29,7 +29,12 @@ void gameManager(){
 		case START_PHASE: mydata->game_state = startPhase(); break;
 	    case WAIT_PHASE:  mydata->game_state = waitPhase();	break;
 	    case FLOOD_PHASE: mydata->game_state = floodPhase(); break;
+	    case GAME_PHASE: mydata->game_state = gamephase(); break;
+	    case WIN_PHASE: mydata->game_state = winphase(); break;
+	    case LOSE_PHASE: mydata->game_state = losephase(); break;
+		case STANDBY_PHASE: mydata->game_state = standbyphase(); break;
 	    case END_PHASE:   mydata->game_state = endPhase();	break;
+
 	}
 }
 
@@ -46,15 +51,16 @@ game_state_t startPhase(){
 
 		for (uint8_t localBot = 1; localBot < 10; localBot++){
 			if(kilo_uid == localBot){
-				uint8_t randomGeneratedNumber = getRandomNumber(3,4);
+				uint8_t randomGeneratedNumber = getRandomNumber(3,7);
 				setColor(numberToColor(randomGeneratedNumber));
-				printf("> %d - (1) Start! %d \n", kilo_uid, randomGeneratedNumber );
+				mydata->my_color= numberToColor(randomGeneratedNumber);
+				printf("> Bot Number %d - (1) Started! Picked Color Code: %d  \n" ,kilo_uid, randomGeneratedNumber); // DEBUG
 			}
 
 		}
 
 	}
-	printf("> %d - (1) Start!\n", kilo_uid);  // DEBUG
+	
 	return WAIT_PHASE;
 }
 
@@ -66,7 +72,7 @@ game_state_t waitPhase(){
 			setStableColor(BLUE);			 // Set a stable color and move on the next phase
 			mydata->game_msg_state = START;  // Setup flooding
 			//mydata->random_color = getRandomColor();	//Choose a random color
-	    mydata->random_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
+	    mydata->runner_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
       return FLOOD_PHASE;
 		}else{
 			return WAIT_PHASE;
@@ -92,7 +98,7 @@ game_state_t floodPhase(){
 	
 
 	if(kilo_uid == 0){									// Coordinator
-		floodMessage(mydata->random_color, &mydata->game_msg_state);	// Flood a message with a color
+		floodMessage(mydata->runner_color, &mydata->game_msg_state);	// Flood a message with a color
 		if(mydata->game_msg_state == FINISH){
 			setStableColor(GREEN);
 			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
@@ -115,9 +121,83 @@ game_state_t floodPhase(){
 		if(mydata->game_msg_state == FINISH){
 			setStableColor(mydata->my_color);
 			printf("> %d: Ended Flooding\n", kilo_uid);
+			return GAME_PHASE;							// When finished flooding moves to the next phase
+		}
+		return FLOOD_PHASE;
+	}
+}
+
+
+
+/*game_state_t gofloodphase(){
+
+
+	if(kilo_uid == 0){									// Coordinator
+		floodMessage(GO_MSG, &mydata->game_msg_state);	// Flood a message with a color
+		if(mydata->game_msg_state == FINISH){
+			setStableColor(GREEN);
+			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
 			return END_PHASE;							// When finished flooding moves to the next phase
 		}
 		return FLOOD_PHASE;
+
+
+
+}*/
+
+game_state_t gamephase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
+	}
+}
+
+game_state_t winphase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
+	}
+}
+
+game_state_t losephase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
+	}
+}
+
+game_state_t standbyphase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
 	}
 }
 
