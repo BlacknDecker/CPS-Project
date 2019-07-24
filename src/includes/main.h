@@ -27,6 +27,10 @@
 // GAME 
 #define MAX_INT 255
 #define MAX_NEIGHBOURS 10
+#define WITCH 0
+#define RUNNER 1
+#define CATCHER 2
+
 
 // MESSAGE EXCHANGE
 #define MAX_OUT_QUEUE 3
@@ -53,6 +57,7 @@
 // TIME
 #define TIMERS_NUMBER 4
 
+// MOVEMENT
 
 /************* ENUMS ********************/
 
@@ -68,6 +73,7 @@ typedef enum {
 // MESSAGE MODULE STATES
 typedef enum{
     PINGING,
+    COLOR,
     BUSY,
     DONE
 } message_exchange_state_t;
@@ -108,6 +114,15 @@ typedef enum {
     RIGHT
 } motion_t;
 
+// Runner informations
+typedef struct {
+  uint8_t runner_id;
+  uint8_t last_distance;
+  uint8_t new_distance;
+  uint8_t last_direction; // belongs to the interval [0,2] (corrisponding to FORWARD, RIGHT, LEFT)
+  uint8_t in_range;
+} runner_t;
+
 /************* GLOBAL VARIABLES ********************/
 
 typedef struct {
@@ -122,6 +137,7 @@ typedef struct {
 
     blink_state_t blink_state;
     uint8_t my_color;                       // Code color of the color that i'm currently displaying
+    uint8_t runner_color;                    // The runner's color, chosen by the witch
 
     /*** *** *** ***/
 
@@ -136,7 +152,7 @@ typedef struct {
     /*** DATA ARCHIVE ***/
 
     uint8_t neighbours[MAX_NEIGHBOURS];     // neighbours[ID] == 1 if kilobot_ID is in range, else == 0
-    uint8_t distance[MAX_NEIGHBOURS];       // if neighbourss[ID] is in range, show distance, else == MAX_INT
+    uint8_t distance[MAX_NEIGHBOURS];       // if neighbours[ID] is in range, show distance, else == MAX_INT
     uint8_t msg_lifetime[MAX_NEIGHBOURS];   // Time from the last time a msg arrived (in kiloticks)
     uint8_t msg_payload[MAX_NEIGHBOURS];    // contains payload of the last msg received from the IDth bot
 
@@ -155,7 +171,8 @@ typedef struct {
 
     /*** MOVEMENT ***/
 
-    // Put variables here
+    uint8_t my_role;
+    runner_t runner;
 
     /*** *** *** ***/
 

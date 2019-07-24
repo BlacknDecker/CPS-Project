@@ -98,6 +98,7 @@ msg_flood_state_t floodingProgress(uint8_t msg_payload){
 void sendingAlgorithm(){
     switch(mydata->msg_ex_state){
         case PINGING: break;                    // Pings 
+        case COLOR: break;                      // send my color
         case BUSY: floodingMessage(); break;    // Flood a message
         default: setupPinging();                // Goes back to pinging
     }
@@ -107,6 +108,12 @@ void setupPinging(){
     // printf("> %d PINGING\n", kilo_uid);
     mydata->msg_ex_state = PINGING;                     // Change state
     setup_message(&mydata->outgoing_message, PING_MSG);     //Change the transmitting msg
+}
+
+void setupColor(){
+    // printf("> %d COLOR\n", kilo_uid);
+    mydata->msg_ex_state = COLOR;                     // Change state
+    setup_message(&mydata->outgoing_message, mydata->my_color);     //Change the transmitting msg
 }
 
 // Flood a message for a while
