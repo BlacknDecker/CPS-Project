@@ -65,8 +65,8 @@ game_state_t waitPhase(){
 			if(kilo_uid==0){ printf("> %d - (2) WAIT End. Flood!\n", kilo_uid); } // DEBUG
 			setStableColor(BLUE);			 // Set a stable color and move on the next phase
 			mydata->game_msg_state = START;  // Setup flooding
-			//mydata->random_color = getRandomColor();	//Choose a random color
-	    mydata->random_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
+			//mydata->runner_color = getRandomColor();	//Choose a random color
+	    mydata->runner_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
       return FLOOD_PHASE;
 		}else{
 			return WAIT_PHASE;
@@ -87,12 +87,8 @@ game_state_t waitPhase(){
 }
 
 game_state_t floodPhase(){
-
-	
-	
-
 	if(kilo_uid == 0){									// Coordinator
-		floodMessage(mydata->random_color, &mydata->game_msg_state);	// Flood a message with a color
+		floodMessage(mydata->runner_color, &mydata->game_msg_state);	// Flood a message with a color
 		if(mydata->game_msg_state == FINISH){
 			setStableColor(GREEN);
 			printf("> %d - (3)  Ended Flooding\n", kilo_uid);

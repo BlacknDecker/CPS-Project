@@ -12,7 +12,8 @@ extern USERDATA * mydata;
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
     // setup global variables
-    if(mydata->my_role == WITCH){
+    if(kilo_uid == 0){
+      mydata->my_role == WITCH;
     	return;
     }
     if(mydata->my_color == mydata->runner_color){
@@ -30,9 +31,6 @@ void setupMovementManager(){
  It moves the kilobot depending on its role
  */
 void movementManager(){
-
-
-	
 	if(waitTime(MOVE_C, 100)){
 		uint8_t myrole = mydata->my_role;
     	if(myrole == RUNNER){
