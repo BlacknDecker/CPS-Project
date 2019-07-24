@@ -137,7 +137,6 @@ typedef struct {
 
     blink_state_t blink_state;
     uint8_t my_color;                       // Code color of the color that i'm currently displaying
-    uint8_t runner_color;                    // The runner's color, chosen by the witch
 
     /*** *** *** ***/
 
@@ -145,7 +144,7 @@ typedef struct {
 
     game_state_t game_state;                // Game state
     msg_flood_state_t game_msg_state;       // Flooding message state
-    uint8_t random_color;                   // Random Color (TEST)
+    uint8_t runner_color;                  // The runner's color, chosen by the witch
 
     // Put variables here
 
