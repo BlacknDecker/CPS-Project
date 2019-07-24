@@ -145,6 +145,8 @@ typedef struct {
 
     game_state_t game_state;                // Game state
     msg_flood_state_t game_msg_state;       // Flooding message state
+    uint8_t random_color;                   // Random Color (TEST)
+
     // Put variables here
 
     /*** *** *** ***/

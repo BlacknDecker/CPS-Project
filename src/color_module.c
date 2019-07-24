@@ -94,23 +94,19 @@ uint8_t colorToMessage(uint8_t rgbColor){
 		case 4: return PURPLE;
 		case 5: return YELLOW;
 		case 6: return ORANGE;
-		default: return OFF;
+		default: return BLUE;
 		}
 }
 
 
+// Get a random number between "from" to "to"
 uint8_t getRandomNumber(uint8_t from,uint8_t to){
 	// Create a random number 
 	rand_seed(rand_hard());
 	uint8_t rand_code = rand_soft();
-	rand_code = (rand_code % to)+from;		// Force it between "from" and "to" (in this case, the colors codes 3 to 7)
-    return rand_code;
+	rand_code = (rand_code % to)+from;
+  return rand_code;
 }
-
-
-
-
-
 
 // insert functions that exposes services to the other modules here
 // Don't forget to update the header file!
