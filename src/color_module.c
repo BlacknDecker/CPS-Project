@@ -102,9 +102,10 @@ uint8_t colorToMessage(uint8_t rgbColor){
 // Get a random number between "from" to "to"
 uint8_t getRandomNumber(uint8_t from,uint8_t to){
 	// Create a random number 
+    to = to - 3;
 	rand_seed(rand_hard());
 	uint8_t rand_code = rand_soft();
-	rand_code = (rand_code % to)+from;
+	rand_code = (rand_code % from)+to;
   return rand_code;
 }
 

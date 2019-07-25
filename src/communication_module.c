@@ -124,6 +124,10 @@ void floodingMessage(){
     }
 }
 
+void pingMessage(uint8_t code){
+
+}
+
 // Generate a message
 void setup_message(message_t * msg, uint8_t payload){
     msg->type = NORMAL;                     // Message type

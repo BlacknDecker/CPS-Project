@@ -29,7 +29,12 @@ void gameManager(){
 		case START_PHASE: mydata->game_state = startPhase(); break;
 	    case WAIT_PHASE:  mydata->game_state = waitPhase();	break;
 	    case FLOOD_PHASE: mydata->game_state = floodPhase(); break;
+	    case GAME_PHASE: mydata->game_state = gamephase(); break;
+	    case WIN_PHASE: mydata->game_state = winphase(); break;
+	    case LOSE_PHASE: mydata->game_state = losephase(); break;
+		case STANDBY_PHASE: mydata->game_state = standbyphase(); break;
 	    case END_PHASE:   mydata->game_state = endPhase();	break;
+
 	}
 }
 
@@ -46,15 +51,16 @@ game_state_t startPhase(){
 
 		for (uint8_t localBot = 1; localBot < 10; localBot++){
 			if(kilo_uid == localBot){
-				uint8_t randomGeneratedNumber = getRandomNumber(3,4);
+				uint8_t randomGeneratedNumber = getRandomNumber(3,7);
 				setColor(numberToColor(randomGeneratedNumber));
-				printf("> %d - (1) Start! %d \n", kilo_uid, randomGeneratedNumber );
+				mydata->my_color= numberToColor(randomGeneratedNumber);
+				printf("> Bot Number %d - (1) Started! Picked Color Code: %d  \n" ,kilo_uid, randomGeneratedNumber); // DEBUG
 			}
 
 		}
 
 	}
-	printf("> %d - (1) Start!\n", kilo_uid);  // DEBUG
+	
 	return WAIT_PHASE;
 }
 
@@ -65,7 +71,7 @@ game_state_t waitPhase(){
 			if(kilo_uid==0){ printf("> %d - (2) WAIT End. Flood!\n", kilo_uid); } // DEBUG
 			setStableColor(BLUE);			 // Set a stable color and move on the next phase
 			mydata->game_msg_state = START;  // Setup flooding
-			//mydata->runner_color = getRandomColor();	//Choose a random color
+			//mydata->random_color = getRandomColor();	//Choose a random color
 	    mydata->runner_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
       return FLOOD_PHASE;
 		}else{
@@ -74,9 +80,21 @@ game_state_t waitPhase(){
 	}else{								    // All the other
 		if(mydata->new_message_arrived){	// Wait for a new message
 			mydata->new_message_arrived = FALSE;	// Reset variable
-			if(mydata->last_msg_payload >= BLUE_MSG || mydata->last_msg_payload <= CYAN_MSG){ 	// Check if i received a color
-				setReceivedColor();						// Set received color
+			if(mydata->last_msg_payload >= BLUE_MSG || mydata->last_msg_payload <= CYAN_MSG){ 	// Checks to see if it has received a color
+				//setReceivedColor();						// Set received color
 				printf("> %d: RECEIVED COLOR CODE:%d!\n", kilo_uid, mydata->last_msg_payload); // DEBUG
+               	
+				mydata->runner_color = getColorFromMessage(mydata->last_msg_payload); // saves the color of the runner
+				if (mydata->my_color == mydata->runner_color){       // Bot sets its self as runner if it has the same color as the picked color by the witch!
+					mydata->my_role = RUNNER; //Updates its role as the Runner
+					printf(">%d Is the Runner Now! [TEST, if Correct Value == 1] VALUE == %d \n ", kilo_uid , mydata->my_role); // DEBUG If Value is 1 it should be Correct
+				}  
+				else if  (kilo_uid != 0 && mydata->my_color != mydata->runner_color) {
+					mydata->my_role = CATCHER; //Updates its role as catcher
+					printf("> %d Is a Catcher Now! [TEST, if Correct Value == 2] VALUE == %d \n ", kilo_uid , mydata->my_role); // DEBUG If Value is 2 it should be Correct
+
+				}
+
 				mydata->game_msg_state = START;  		// Setup flooding
 				setStableColor(mydata->my_color);
 				return FLOOD_PHASE;						// move to the next phase
@@ -109,11 +127,94 @@ game_state_t floodPhase(){
 	    }
 	    */
 		if(mydata->game_msg_state == FINISH){
+
+
 			setStableColor(mydata->my_color);
 			printf("> %d: Ended Flooding\n", kilo_uid);
+			return GAME_PHASE;							// When finished flooding moves to the next phase
+		}
+		return FLOOD_PHASE;
+	}
+}
+
+
+
+/*game_state_t gofloodphase(){
+
+
+	if(kilo_uid == 0){									// Coordinator
+		floodMessage(GO_MSG, &mydata->game_msg_state);	// Flood a message with a color
+		if(mydata->game_msg_state == FINISH){
+			setStableColor(GREEN);
+			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
 			return END_PHASE;							// When finished flooding moves to the next phase
 		}
 		return FLOOD_PHASE;
+
+
+
+}*/
+
+game_state_t gamephase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else if (mydata->my_role == RUNNER){
+
+			//setup_message(PING_MSG, RUNNER_MSG);  <-------------------- with this it complies, but the application closes with and exeption
+
+
+			setupPinging();
+			pingMessage();
+		}
+
+
+
+
+
+	
+}
+
+game_state_t winphase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
+	}
+}
+
+game_state_t losephase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
+	}
+}
+
+game_state_t standbyphase(){
+
+	if(kilo_uid == 0){
+		return END_PHASE;
+	}
+	else{
+
+
+
+
+
 	}
 }
 
