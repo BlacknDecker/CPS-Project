@@ -127,8 +127,6 @@ game_state_t floodPhase(){
 	    }
 	    */
 		if(mydata->game_msg_state == FINISH){
-
-
 			setStableColor(mydata->my_color);
 			printf("> %d: Ended Flooding\n", kilo_uid);
 			return GAME_PHASE;							// When finished flooding moves to the next phase
@@ -160,20 +158,21 @@ game_state_t gamephase(){
 	if(kilo_uid == 0){
 		return END_PHASE;
 	}
-	else if (mydata->my_role == RUNNER){
-
-			//setup_message(PING_MSG, RUNNER_MSG);  <-------------------- with this it complies, but the application closes with and exeption
-
-
-			setupPinging();
-			pingMessage();
+	setupPinging();
+	pingMessage(mydata->my_role);
+	uint8_t winning = movementManager();
+	if (winning==1){
+		return WIN_PHASE;
+	} else if (winning==0) {
+		return LOSE_PHASE;
+	} else if(winning==-1 && isElapsed(GAME_TIMEOUT)) { // if the kilobot is still playing but the game timeout is elapsed
+		if (mydata->my_role == RUNNER) { //if the timeout is elapsed and the kilobot is a catcher it loses
+			return WIN_PHASE;
+		} else {
+			return LOSE_PHASE;
 		}
-
-
-
-
-
-	
+	}
+	return GAME_PHASE;
 }
 
 game_state_t winphase(){
@@ -184,8 +183,9 @@ game_state_t winphase(){
 	else{
 
 
-
-
+		// maybe they can blink GREEN ?
+		printf("kilobot %d WINS%d\n", kilo_uid);
+		return END_PHASE;
 
 	}
 }
@@ -197,10 +197,9 @@ game_state_t losephase(){
 	}
 	else{
 
-
-
-
-
+		// maybe they can blink RED ?
+		printf("kilobot %d LOSES%d\n", kilo_uid);
+		return END_PHASE;
 	}
 }
 
@@ -219,10 +218,12 @@ game_state_t standbyphase(){
 }
 
 game_state_t endPhase(){
+	/*
 	if(waitTime(GAME_C, 160)){		// Wait 5 sec
 		printf("> %d - (4) Cooldown Ended\n", kilo_uid);
 		return START_PHASE;
 	}
+	*/
 	return END_PHASE;
 }
 

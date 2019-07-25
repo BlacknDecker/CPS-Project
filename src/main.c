@@ -14,9 +14,8 @@ REGISTER_USERDATA(USERDATA)
 /******* SETUP,LOOP,MAIN *******************/
 
 void loop(){
-  gameManager();
   communicationManager();
-  movementManager();
+  gameManager();
 }
 
 
