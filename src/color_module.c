@@ -72,6 +72,7 @@ uint8_t getColorFromMessage(uint8_t msg){
 		case PURPLE_MSG: return PURPLE;
 		case YELLOW_MSG: return YELLOW;
 		case ORANGE_MSG: return ORANGE;
+		case CYAN_MSG: return CYAN;
 		default: return OFF;
 	}
 }
@@ -83,6 +84,7 @@ uint8_t colorToMessage(uint8_t rgbColor){
 		case PURPLE: return PURPLE_MSG;
 		case YELLOW: return YELLOW_MSG;
 		case ORANGE: return ORANGE_MSG;
+		case CYAN: return CYAN_MSG;
 		default: return VOID_MSG;
 	}
 }
@@ -94,6 +96,7 @@ uint8_t colorToMessage(uint8_t rgbColor){
 		case 4: return PURPLE;
 		case 5: return YELLOW;
 		case 6: return ORANGE;
+		case 7: return CYAN;
 		default: return BLUE;
 		}
 }
