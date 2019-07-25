@@ -12,6 +12,7 @@ extern USERDATA * mydata;
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
   // setup global variables
+  mydata->collision = FALSE;
   runnerInfoSetup();
  }
 
@@ -23,19 +24,17 @@ void setupMovementManager(){
  */
 void movementManager(){
 	if(waitTime(MOVE_C, 100)){
-		uint8_t myrole = mydata->my_role;
-    if(mydata->play==FALSE){
+    if(mydata->play==FALSE || mydata->collision==TRUE){
       setMotion(STOP);
-    }
-  	if(myrole == RUNNER){
+    } else if(mydata->my_role == RUNNER){
   		run();
-  	} else if(myrole == CATCHER){
+  	} else if(mydata->my_role == CATCHER){
   		updateRunnerInfo();
   		searchAndCatch();
   	}
 	}
-	uint8_t collision = avoidCollisions();
-  checkIfWinner(collision);
+	avoidCollisions();
+  checkIfWinner();
 }
 
 void setMotion(motion_t new_motion){
@@ -114,19 +113,18 @@ uint8_t collisionDetected(){
 	uint8_t ret = FALSE;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){
 		if(mydata->distance[i] <= DANGER_D){
-       printf("> %d - my distance from %d is: %d\n", kilo_uid, i, mydata->distance[i]);
+       // printf("> %d - my distance from %d is: %d\n", kilo_uid, i, mydata->distance[i]);
 			ret = TRUE;
 		}
 	}
 	return ret;
 }
 
-uint8_t avoidCollisions(){
+void avoidCollisions(){
 	if(collisionDetected()){		// DANGER AREA --> STOP	
     	setMotion(STOP);
-      return TRUE;
+      mydata->collision = TRUE;
 	}
-  return FALSE;
 }
 
 void updateRunnerInfo(){
@@ -165,16 +163,16 @@ void updateDistance(uint8_t myrunner){
 	}
 }
 
-void checkIfWinner(uint8_t collision) {
-
+void checkIfWinner() {
   if(mydata->my_role == RUNNER) {
     // if the runner gets caught it loses
-    if (collision && mydata->last_msg_payload==CATCHER){
+    //printf("I am runner %d\n", kilo_uid);
+    if (mydata->collision && mydata->last_msg_payload==CATCHER){
       mydata->game_status = LOSER;
     }
   }else if (mydata->my_role == CATCHER) {
     // if the catcher has caught the runner it wins
-    if (collision && mydata->runner.runner_id != 255 && mydata->runner.last_distance < DANGER_D){
+    if (mydata->collision && mydata->runner.runner_id != 255 && mydata->runner.last_distance < DANGER_D){
       mydata->game_status = WINNER;
     }
   }
