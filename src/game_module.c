@@ -138,39 +138,22 @@ game_state_t floodPhase(){
 }
 
 
-
-/*game_state_t gofloodphase(){
-
-
-	if(kilo_uid == 0){									// Coordinator
-		floodMessage(GO_MSG, &mydata->game_msg_state);	// Flood a message with a color
-		if(mydata->game_msg_state == FINISH){
-			setStableColor(GREEN);
-			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
-			return END_PHASE;							// When finished flooding moves to the next phase
-		}
-		return FLOOD_PHASE;
-
-
-
-}*/
-
 game_state_t gamephase(){
 
 	if(kilo_uid == 0){
 		return END_PHASE;
 	}
-	else if (mydata->my_role == RUNNER){
+	if (mydata->my_role == RUNNER){
 
-			//setup_message(PING_MSG, RUNNER_MSG);  <-------------------- with this it complies, but the application closes with and exeption
+			pingMessage(RUNNER_MSG);
 
+		return GAME_PHASE;
+		} else if (mydata->my_role == CATCHER){
 
-			setupPinging();
-			pingMessage();
-		}
+			pingMessage(CATCHER_MSG);
 
-
-
+		return GAME_PHASE;
+	}
 
 
 	

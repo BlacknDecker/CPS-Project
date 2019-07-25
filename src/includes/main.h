@@ -49,7 +49,7 @@
 #define CYAN_MSG 7
 //...
 #define YES_MSG 11
-#define NO_MSG 12
+#define CATCHER_MSG 12
 #define GO_MSG 13
 #define RUNNER_MSG 14
 // -- ------------- --
