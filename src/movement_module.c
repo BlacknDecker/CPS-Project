@@ -13,10 +13,9 @@ void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
     // setup global variables
     if(kilo_uid == 0){
-      mydata->my_role == WITCH;
+      	mydata->my_role == WITCH;
     	return;
-    }
-    if(mydata->my_color == mydata->runner_color){
+    } else if(mydata->my_color == mydata->runner_color){
     	mydata->my_role = RUNNER;
     } else {
     	mydata->my_role = CATCHER;

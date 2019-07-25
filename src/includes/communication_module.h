@@ -8,6 +8,9 @@ void communicationManager();        // Communication Routine
 // NB: flood_state must be initialized to START
 void floodMessage(uint8_t msg_payload, msg_flood_state_t * flood_state);
 
+// Set a new message to ping. 
+// NB: no need to be called over time, just call it the first time and will start pinging until a new message is sent!
+void pingMessage(uint8_t msg_payload);
 
 /*** SUPPORT **/
 
@@ -20,7 +23,6 @@ msg_flood_state_t floodingProgress(uint8_t msg_payload);
 // SEND
 void sendingAlgorithm();
 void setupPinging();
-void setupColor();
 void floodingMessage();
 void setup_message(message_t * msg, uint8_t payload);
 message_t * message_sender();
