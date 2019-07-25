@@ -51,7 +51,7 @@ game_state_t startPhase(){
 
 		for (uint8_t localBot = 1; localBot < 10; localBot++){
 			if(kilo_uid == localBot){
-				uint8_t randomGeneratedNumber = getRandomNumber(3,7);
+				uint8_t randomGeneratedNumber = getRandomNumber(3,8);
 				setColor(numberToColor(randomGeneratedNumber));
 				mydata->my_color= numberToColor(randomGeneratedNumber);
 				printf("> Bot Number %d - (1) Started! Picked Color Code: %d  \n" ,kilo_uid, randomGeneratedNumber); // DEBUG
@@ -72,7 +72,7 @@ game_state_t waitPhase(){
 			setStableColor(BLUE);			 // Set a stable color and move on the next phase
 			mydata->game_msg_state = START;  // Setup flooding
 			//mydata->random_color = getRandomColor();	//Choose a random color
-	    mydata->runner_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
+	    mydata->runner_color = getRandomNumber(3,8); //picking a color as the runner to flood it.
       return FLOOD_PHASE;
 		}else{
 			return WAIT_PHASE;
@@ -163,12 +163,10 @@ game_state_t winphase(){
 
 	if(kilo_uid == 0){
 		return END_PHASE;
+
 	}
-	else{
-
-
-
-
+	else{						// the bot blinks green as it wins
+		blink(16, 32, GREEN);
 
 	}
 }
@@ -179,10 +177,7 @@ game_state_t losephase(){
 		return END_PHASE;
 	}
 	else{
-
-
-
-
+		blink(16, 32, WHITE);     // the bot blinks white, as waving the flag of surrender! the white flag!
 
 	}
 }
@@ -190,22 +185,42 @@ game_state_t losephase(){
 game_state_t standbyphase(){
 
 	if(kilo_uid == 0){
+
 		return END_PHASE;
 	}
-	else{
-
-
-
-
-
+	
+ 	if (mydata->my_role == RUNNER){    // if the runner is in the standbyphase and 
+		if(waitTime(GAME_C, 300)){		// Waits for time to run out
+		
+			if(mydata->new_message_arrived == TRUE && mydata->last_msg_payload == CATCHER_MSG){  //checks to see if a meaningful message has arrived or not if true
+				mydata->new_message_arrived = FALSE;												// resets the new msg flag
+				return GAME_PHASE;																	// goes back to the game phasse
+			}
+			else {
+				printf("# the bot number %d -Has WON Proudly! \n", kilo_uid);
+				return WIN_PHASE;																	// if lost for a long time moves to win phase!
+			}
+		}
 	}
+	if (mydata->my_role == CATCHER){
+		if(waitTime(GAME_C, 300)){		// Waits for time to run out
+		
+			if(mydata->new_message_arrived == TRUE && mydata->last_msg_payload == RUNNER_MSG){ //checks to see if a meaningful message has arrived or not if true
+				mydata->new_message_arrived = FALSE;											// resets the new msg flag
+				return GAME_PHASE;																// goes back to the game phasse
+			}
+			else {
+				printf("# the bot number %d -Has LOST Shamefully! \n", kilo_uid);			
+				return LOSE_PHASE;																// if lost for a long time moves to lose phase!
+			}
+		
+		}
+	}
+
 }
 
 game_state_t endPhase(){
-	if(waitTime(GAME_C, 160)){		// Wait 5 sec
-		printf("> %d - (4) Cooldown Ended\n", kilo_uid);
-		return START_PHASE;
-	}
+    blink(16, 32, BLUE);
 	return END_PHASE;
 }
 

@@ -149,7 +149,7 @@ typedef struct {
     game_state_t game_state;                // Game state
     msg_flood_state_t game_msg_state;       // Flooding message state
     uint8_t runner_color;                  // The runner's color, chosen by the witch
-
+    //uint8_t standby_flag;                   // is True when the standby timer is finished!
     // Put variables here
 
     /*** *** *** ***/
