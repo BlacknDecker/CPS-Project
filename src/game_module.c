@@ -105,10 +105,6 @@ game_state_t waitPhase(){
 }
 
 game_state_t floodPhase(){
-
-	
-	
-
 	if(kilo_uid == 0){									// Coordinator
 		floodMessage(mydata->runner_color, &mydata->game_msg_state);	// Flood a message with a color
 		if(mydata->game_msg_state == FINISH){

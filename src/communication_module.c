@@ -32,9 +32,6 @@ void setupCommunicationManager(){
 }
 
 
-/*** CORE FUNCTIONS ***/
-
-
 /*** MESSAGE MANAGEMENT ROUTINE ***/
 void communicationManager(){
     if(mydata->msg_ex_state == PINGING){  // Just pinging
@@ -44,6 +41,8 @@ void communicationManager(){
     checkExpiredData();                   // Check if data are still consistent
 }
 
+
+/*** CORE FUNCTIONS ***/
 
 //Flood a message. Insert into flood_state the state of the message exchange
 // NB: flood_state must be initialize to START
@@ -55,8 +54,16 @@ void floodMessage(uint8_t msg_payload, msg_flood_state_t * flood_state){
         case FINISH: *flood_state = FINISH; break;
         default: *flood_state = ERROR;
     }
-
 }
+
+// Set a new message to ping. 
+// NB: no need to be called over time, just call it the first time and will start pinging until a new message is sent!
+void pingMessage(uint8_t msg_payload){
+    // printf("> %d PINGING\n", kilo_uid);
+    mydata->msg_ex_state = PINGING;                            // Change state
+    setup_message(&mydata->outgoing_message, msg_payload);     // Change the transmitting msg
+}
+
 
 /*** SUPPORT FUNCTIONS ***/
 
@@ -106,14 +113,8 @@ void sendingAlgorithm(){
 
 void setupPinging(){
     // printf("> %d PINGING\n", kilo_uid);
-    mydata->msg_ex_state = PINGING;                     // Change state
+    mydata->msg_ex_state = PINGING;                         // Change state
     setup_message(&mydata->outgoing_message, PING_MSG);     //Change the transmitting msg
-}
-
-void setupColor(){
-    // printf("> %d COLOR\n", kilo_uid);
-    mydata->msg_ex_state = COLOR;                     // Change state
-    setup_message(&mydata->outgoing_message, mydata->my_color);     //Change the transmitting msg
 }
 
 // Flood a message for a while

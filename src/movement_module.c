@@ -12,10 +12,10 @@ extern USERDATA * mydata;
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
     // setup global variables
-    if(mydata->my_role == WITCH){
+    if(kilo_uid == 0){
+      	mydata->my_role == WITCH;
     	return;
-    }
-    if(mydata->my_color == mydata->runner_color){
+    } else if(mydata->my_color == mydata->runner_color){
     	mydata->my_role = RUNNER;
     } else {
     	mydata->my_role = CATCHER;
@@ -30,9 +30,6 @@ void setupMovementManager(){
  It moves the kilobot depending on its role
  */
 void movementManager(){
-
-
-	
 	if(waitTime(MOVE_C, 100)){
 		uint8_t myrole = mydata->my_role;
     	if(myrole == RUNNER){
@@ -140,7 +137,7 @@ void lookForARunner(){
 	uint8_t myrunner = -1;
 	uint8_t d = MAX_INT;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
-		if(mydata->distance[i]<d && mydata->msg_payload[i]==mydata->runner_color){	// the msg_payload contains the color of the bot in the game phase
+		if(mydata->distance[i]<d && mydata->msg_payload[i]==RUNNER){	// the msg_payload contains the role of the bot in the game phase
 			d = mydata->distance[i];
 			myrunner = i;
 		}
