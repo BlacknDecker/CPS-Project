@@ -107,7 +107,7 @@ game_state_t floodPhase(){
 		return FLOOD_PHASE;
 	} else {											// All the others
 		blink(16, 8, mydata->my_color);
-		floodMessage(colorToMessage(mydata->my_color), &mydata->game_msg_state);	// Flood the color received
+		floodMessage(colorToMessage(mydata->runner_color), &mydata->game_msg_state);	// Flood the color received
 		/*
 		if(kilo_uid == 1){ 
 	        printf(" 	> FLOODING PROGRESS - COMM CLOCK: %d\n", mydata->timer[COMMUNICATION_C]);
