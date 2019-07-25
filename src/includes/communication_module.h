@@ -11,6 +11,7 @@ void floodMessage(uint8_t msg_payload, msg_flood_state_t * flood_state);
 // Set a new message to ping. 
 // NB: no need to be called over time, just call it the first time and will start pinging until a new message is sent!
 void pingMessage(uint8_t msg_payload);
+void flushLastMsgPayload();	// sets the content of the last message payload to MAX_INT
 
 /*** SUPPORT **/
 

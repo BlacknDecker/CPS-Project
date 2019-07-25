@@ -16,6 +16,7 @@ REGISTER_USERDATA(USERDATA)
 void loop(){
   communicationManager();
   gameManager();
+  movementManager();
 }
 
 

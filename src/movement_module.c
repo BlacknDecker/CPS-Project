@@ -11,10 +11,8 @@ extern USERDATA * mydata;
 
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
-    // setup global variables
-    if(mydata->my_role == CATCHER){
-    	mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
-    }
+  // setup global variables
+  runnerInfoSetup();
  }
 
 
@@ -23,20 +21,22 @@ void setupMovementManager(){
 /*
  It moves the kilobot depending on its role and checks if it is winner
  */
-uint8_t movementManager(){
+void movementManager(){
 	if(waitTime(MOVE_C, 100)){
 		uint8_t myrole = mydata->my_role;
-    	if(myrole == RUNNER){
-    		run();
-    	} else if(myrole == CATCHER){
-    		updateRunnerInfo();
-    		searchAndCatch();
-    	}
-    
-    	//update();
+    if(mydata->play==FALSE){
+      setMotion(STOP);
+      return;
+    }
+  	if(myrole == RUNNER){
+  		run();
+  	} else if(myrole == CATCHER){
+  		updateRunnerInfo();
+  		searchAndCatch();
+  	}
 	}
 	uint8_t collision = avoidCollisions();
-  return checkIfWinner(collision);
+  checkIfWinner(collision);
 }
 
 void setMotion(motion_t new_motion){
@@ -54,6 +54,14 @@ void setMotion(motion_t new_motion){
     set_motors(0, kilo_turn_right); 
     break;
   }
+}
+
+void runnerInfoSetup(){
+  mydata->runner.runner_id = 255;
+  mydata->runner.last_distance = MAX_INT;
+  mydata->runner.new_distance = MAX_INT;
+  mydata->runner.last_direction = 0;
+  mydata->runner.in_range = 0;
 }
 
 void moveRandomly(){
@@ -104,10 +112,11 @@ void follow(){
 }
 
 uint8_t collisionDetected(){
-	uint8_t ret = 0;
-	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
+	uint8_t ret = FALSE;
+	for(int i=0; i<MAX_NEIGHBOURS; i++){
 		if(mydata->distance[i] <= DANGER_D){
-			ret = 1;
+       printf("> %d - my distance from %d is: %d\n", kilo_uid, i, mydata->distance[i]);
+			ret = TRUE;
 		}
 	}
 	return ret;
@@ -123,7 +132,7 @@ uint8_t avoidCollisions(){
 
 void updateRunnerInfo(){
 	uint8_t myrunner = mydata->runner.runner_id;
-	if( myrunner == -1){
+	if( myrunner == 255){
 		lookForARunner();
 	}else{
 		updateDistance(myrunner);
@@ -131,7 +140,7 @@ void updateRunnerInfo(){
 }
 
 void lookForARunner(){
-	uint8_t myrunner = -1;
+	uint8_t myrunner = 255;
 	uint8_t d = MAX_INT;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
 		if(mydata->distance[i]<d && mydata->msg_payload[i]==RUNNER){	// the msg_payload contains the role of the bot in the game phase
@@ -139,7 +148,11 @@ void lookForARunner(){
 			myrunner = i;
 		}
 	}
-	mydata->runner = (runner_t){myrunner, d, d, 0, 1};
+	mydata->runner.runner_id = myrunner;
+  mydata->runner.last_distance = d;
+  mydata->runner.new_distance = d; 
+  mydata->runner.last_direction = 0; 
+  mydata->runner.in_range = 1;
 }
 
 void updateDistance(uint8_t myrunner){
@@ -149,23 +162,21 @@ void updateDistance(uint8_t myrunner){
 		mydata->runner.last_distance = mydata->runner.new_distance;
 		mydata->runner.new_distance = distance;
 	}else{
-		mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
+		runnerInfoSetup();
 	}
 }
 
-uint8_t checkIfWinner(uint8_t collision) {
+void checkIfWinner(uint8_t collision) {
 
   if(mydata->my_role == RUNNER) {
     // if the runner gets caught it loses
-    if (collision){
-      return FALSE;
+    if (collision && mydata->last_msg_payload==CATCHER){
+      mydata->game_status = LOSER;
     }
   }else if (mydata->my_role == CATCHER) {
     // if the catcher has caught the runner it wins
-    if (mydata->runner.runner_id != -1 && mydata->runner.last_distance < DANGER_D){
-      return TRUE;
+    if (collision && mydata->runner.runner_id != 255 && mydata->runner.last_distance < DANGER_D){
+      mydata->game_status = WINNER;
     }
   }
-  // Otherwise the game is going on
-  return -1;
 }

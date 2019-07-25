@@ -64,6 +64,10 @@ void pingMessage(uint8_t msg_payload){
     setup_message(&mydata->outgoing_message, msg_payload);     // Change the transmitting msg
 }
 
+void flushLastMsgPayload(){
+    mydata->last_msg_payload = MAX_INT;
+}
+
 
 /*** SUPPORT FUNCTIONS ***/
 

@@ -20,7 +20,7 @@
 #define CYAN RGB(0,1,1)
 
 // DISTANCE ZONEs
-#define DANGER_D 25
+#define DANGER_D 40
 #define WARNING_D 60
 #define SAFE_D 70
 
@@ -30,12 +30,15 @@
 #define WITCH 0
 #define RUNNER 1
 #define CATCHER 2
+#define WINNER 1
+#define LOSER 0
+#define PLAYING 255
 
 
 // MESSAGE EXCHANGE
 #define MAX_OUT_QUEUE 3
 #define TIMEOUT 64
-#define GAME_TIMEOUT 1500
+#define GAME_TIMEOUT 30
 #define DATA_LIFETIME 48
 
 // -- MESSAGE CODES --
@@ -151,8 +154,8 @@ typedef struct {
     msg_flood_state_t game_msg_state;       // Flooding message state
     uint8_t runner_color;                  // The runner's color, chosen by the witch
     uint8_t my_role;
-
-    // Put variables here
+    uint8_t game_status;                    // Winner or Loser
+    uint8_t play;                           // flag that indicates if the kilobot is playing or not
 
     /*** *** *** ***/
 

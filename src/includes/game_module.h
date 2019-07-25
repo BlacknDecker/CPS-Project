@@ -16,5 +16,3 @@ game_state_t winphase();
 game_state_t losephase();
 game_state_t gamephase();
 game_state_t standbyphase();
-
-void setReceivedColor();

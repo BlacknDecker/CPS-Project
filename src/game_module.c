@@ -14,7 +14,8 @@ void setupGameManager(){
 	printf("SetupGameManager\n"); //Stub
 	mydata->game_state = START_PHASE;
 	mydata->game_msg_state = START;
-    // setup global variables
+    mydata->game_status = PLAYING;
+    mydata->play = FALSE;
 }
 
 
@@ -46,9 +47,9 @@ void gameManager(){
 
 game_state_t startPhase(){
 	if(kilo_uid == 0){
+		mydata->my_role = WITCH;
 		setColor(WHITE);
 	}else{
-
 		for (uint8_t localBot = 1; localBot < 10; localBot++){
 			if(kilo_uid == localBot){
 				uint8_t randomGeneratedNumber = getRandomNumber(3,7);
@@ -60,38 +61,33 @@ game_state_t startPhase(){
 		}
 
 	}
-	
 	return WAIT_PHASE;
 }
 
 game_state_t waitPhase(){
 	if(kilo_uid == 0){					// Coordinator
 		blink(16, 32, WHITE);
-		if(waitTime(GAME_C, 160)){		// Wait 5 sec
-			if(kilo_uid==0){ printf("> %d - (2) WAIT End. Flood!\n", kilo_uid); } // DEBUG
-			setStableColor(BLUE);			 // Set a stable color and move on the next phase
+		if(waitTime(GAME_C, 10)){		// Wait 5 sec
+			printf("> %d - (2) WAIT End. Flood!\n", kilo_uid); // DEBUG
+			setStableColor(WHITE);			 // Set a stable color and move on the next phase
 			mydata->game_msg_state = START;  // Setup flooding
 			//mydata->random_color = getRandomColor();	//Choose a random color
-	    mydata->runner_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
-      return FLOOD_PHASE;
+	    	mydata->runner_color = getRandomNumber(3,7); //picking a color as the runner to flood it.
+      		return FLOOD_PHASE;
 		}else{
 			return WAIT_PHASE;
 		}
 	}else{								    // All the other
 		if(mydata->new_message_arrived){	// Wait for a new message
 			mydata->new_message_arrived = FALSE;	// Reset variable
-			if(mydata->last_msg_payload >= BLUE_MSG || mydata->last_msg_payload <= CYAN_MSG){ 	// Checks to see if it has received a color
-				//setReceivedColor();						// Set received color
-				printf("> %d: RECEIVED COLOR CODE:%d!\n", kilo_uid, mydata->last_msg_payload); // DEBUG
-               	
+			if(mydata->last_msg_payload >= BLUE_MSG || mydata->last_msg_payload <= CYAN_MSG){					// Set received color
 				mydata->runner_color = getColorFromMessage(mydata->last_msg_payload); // saves the color of the runner
+				printf("> %d: RECEIVED COLOR CODE:%d!\n", kilo_uid, mydata->runner_color); // DEBUG
 				if (mydata->my_color == mydata->runner_color){       // Bot sets its self as runner if it has the same color as the picked color by the witch!
 					mydata->my_role = RUNNER; //Updates its role as the Runner
-					printf(">%d Is the Runner Now! [TEST, if Correct Value == 1] VALUE == %d \n ", kilo_uid , mydata->my_role); // DEBUG If Value is 1 it should be Correct
 				}  
 				else if  (kilo_uid != 0 && mydata->my_color != mydata->runner_color) {
 					mydata->my_role = CATCHER; //Updates its role as catcher
-					printf("> %d Is a Catcher Now! [TEST, if Correct Value == 2] VALUE == %d \n ", kilo_uid , mydata->my_role); // DEBUG If Value is 2 it should be Correct
 
 				}
 
@@ -108,14 +104,14 @@ game_state_t floodPhase(){
 	if(kilo_uid == 0){									// Coordinator
 		floodMessage(mydata->runner_color, &mydata->game_msg_state);	// Flood a message with a color
 		if(mydata->game_msg_state == FINISH){
-			setStableColor(GREEN);
 			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
+			setStableColor(mydata->runner_color);
 			return END_PHASE;							// When finished flooding moves to the next phase
 		}
 		return FLOOD_PHASE;
 	} else {											// All the others
 		blink(16, 8, mydata->my_color);
-		floodMessage(colorToMessage(mydata->my_color), &mydata->game_msg_state);	// Flood the color received
+		floodMessage(colorToMessage(mydata->runner_color), &mydata->game_msg_state);	// Flood the color received
 		/*
 		if(kilo_uid == 1){ 
 	        printf(" 	> FLOODING PROGRESS - COMM CLOCK: %d\n", mydata->timer[COMMUNICATION_C]);
@@ -129,6 +125,7 @@ game_state_t floodPhase(){
 		if(mydata->game_msg_state == FINISH){
 			setStableColor(mydata->my_color);
 			printf("> %d: Ended Flooding\n", kilo_uid);
+			flushLastMsgPayload();
 			return GAME_PHASE;							// When finished flooding moves to the next phase
 		}
 		return FLOOD_PHASE;
@@ -158,19 +155,13 @@ game_state_t gamephase(){
 	if(kilo_uid == 0){
 		return END_PHASE;
 	}
+	mydata->play = TRUE;
 	setupPinging();
 	pingMessage(mydata->my_role);
-	uint8_t winning = movementManager();
-	if (winning==1){
+	if (mydata->game_status == WINNER){
 		return WIN_PHASE;
-	} else if (winning==0) {
+	} else if (mydata->game_status == LOSER) {
 		return LOSE_PHASE;
-	} else if(winning==-1 && isElapsed(GAME_TIMEOUT)) { // if the kilobot is still playing but the game timeout is elapsed
-		if (mydata->my_role == RUNNER) { //if the timeout is elapsed and the kilobot is a catcher it loses
-			return WIN_PHASE;
-		} else {
-			return LOSE_PHASE;
-		}
 	}
 	return GAME_PHASE;
 }
@@ -181,10 +172,8 @@ game_state_t winphase(){
 		return END_PHASE;
 	}
 	else{
-
-
 		// maybe they can blink GREEN ?
-		printf("kilobot %d WINS%d\n", kilo_uid);
+		printf("kilobot %d WINS\n", kilo_uid);
 		return END_PHASE;
 
 	}
@@ -198,7 +187,7 @@ game_state_t losephase(){
 	else{
 
 		// maybe they can blink RED ?
-		printf("kilobot %d LOSES%d\n", kilo_uid);
+		printf("kilobot %d LOSES\n", kilo_uid);
 		return END_PHASE;
 	}
 }
@@ -211,9 +200,6 @@ game_state_t standbyphase(){
 	else{
 
 
-
-
-
 	}
 }
 
@@ -224,21 +210,9 @@ game_state_t endPhase(){
 		return START_PHASE;
 	}
 	*/
+	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
+	mydata->play = FALSE;	// stops the kilobot
 	return END_PHASE;
-}
-
-
-// UTIL
-void setReceivedColor(){
-	uint8_t color_code = mydata->last_msg_payload;
-	uint8_t translated_color = getColorFromMessage(color_code);
-	setColor(translated_color);
-	/*
-	printf(" - COLOR DEBUG -\n");
-	printf("Color Code Received:%d\n", color_code);
-	printf("Translated Color: %d\n", translated_color);
-	printf("Actual Color:%d\n\n", mydata->my_color);
-	*/
 }
 
 // insert support ("private") functions here
