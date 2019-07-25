@@ -33,7 +33,7 @@ void gameManager(){
 	    case GAME_PHASE: mydata->game_state = gamephase(); break;
 	    case WIN_PHASE: mydata->game_state = winphase(); break;
 	    case LOSE_PHASE: mydata->game_state = losephase(); break;
-		  case STANDBY_PHASE: mydata->game_state = standbyphase(); break;
+		case STANDBY_PHASE: mydata->game_state = standbyphase(); break;
 	    case END_PHASE:   mydata->game_state = endPhase();	break;
 
 	}
@@ -99,7 +99,7 @@ game_state_t floodPhase(){
 		floodMessage(mydata->runner_color, &mydata->game_msg_state);	// Flood a message with a color
 		if(mydata->game_msg_state == FINISH){
 			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
-			setStableColor(mydata->runner_color);
+			blink(16, 32, mydata->runner_color);		// the witch blinks the color of the runners
 			return END_PHASE;							// When finished flooding moves to the next phase
 		}
 		return FLOOD_PHASE;
@@ -128,7 +128,6 @@ game_state_t floodPhase(){
 
 
 game_state_t gamephase(){
-
 	if(kilo_uid == 0){
 		return END_PHASE;
 	}
@@ -143,30 +142,16 @@ game_state_t gamephase(){
 }
 
 game_state_t winphase(){
-	if(kilo_uid == 0){
-		return END_PHASE;
-	}
-	else{
-		// the bot blinks green as it wins
-		blink(16, 32, GREEN);
-		pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
-		mydata->play = FALSE;	// stops the kilobot
-		printf("kilobot %d WINS%d\n", kilo_uid);
-		return WIN_PHASE;
-	}
+	// the bot blinks green as it wins
+	blink(16, 32, GREEN);
+	printf("kilobot %d WINS\n", kilo_uid);
+	return END_PHASE;
 }
 
 game_state_t losephase(){
-	if(kilo_uid == 0){
-		return END_PHASE;
-	}
-	else{
-		blink(16, 32, WHITE);     // the bot blinks white, as waving the flag of surrender! the white flag!
-		pingMessage(255);		  // notifies the other kilobots to avoid collisions, but telling that it's out of the game
-		mydata->play = FALSE;	  // stops the kilobot
-		printf("kilobot %d LOSES%d\n", kilo_uid);
-		return LOSE_PHASE;
-	}
+	blink(16, 32, WHITE);     // the bot blinks white, as waving the flag of surrender! the white flag!
+	printf("kilobot %d LOSES\n", kilo_uid);
+	return END_PHASE;
 }
 
 game_state_t standbyphase(){
@@ -201,7 +186,6 @@ game_state_t standbyphase(){
 game_state_t endPhase(){
 	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
 	mydata->play = FALSE;	// stops the kilobot
-    blink(16, 32, mydata->runner_color);	// the witch blinks the color of the runners
 	return END_PHASE;
 }
 

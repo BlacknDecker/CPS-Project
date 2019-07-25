@@ -26,7 +26,6 @@ void movementManager(){
 		uint8_t myrole = mydata->my_role;
     if(mydata->play==FALSE){
       setMotion(STOP);
-      return;
     }
   	if(myrole == RUNNER){
   		run();
