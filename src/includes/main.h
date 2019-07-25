@@ -53,7 +53,7 @@
 #define CYAN_MSG 7
 //...
 #define YES_MSG 11
-#define NO_MSG 12
+#define CATCHER_MSG 12
 #define GO_MSG 13
 #define RUNNER_MSG 14
 // -- ------------- --
@@ -153,6 +153,7 @@ typedef struct {
     game_state_t game_state;                // Game state
     msg_flood_state_t game_msg_state;       // Flooding message state
     uint8_t runner_color;                  // The runner's color, chosen by the witch
+    //uint8_t standby_flag;                   // is True when the standby timer is finished!
     uint8_t my_role;
     uint8_t game_status;                    // Winner or Loser
     uint8_t play;                           // flag that indicates if the kilobot is playing or not
