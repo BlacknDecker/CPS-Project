@@ -181,7 +181,7 @@ typedef struct {
     /*** *** *** ***/
 
     /*** MOVEMENT ***/
-
+    uint8_t collision;                          // flag
     runner_t runner;                            // structure containing all the infos about the current runner
 
     /*** *** *** ***/
