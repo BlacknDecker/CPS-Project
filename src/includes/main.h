@@ -20,7 +20,7 @@
 #define CYAN RGB(0,1,1)
 
 // DISTANCE ZONEs
-#define DANGER_D 45
+#define DANGER_D 25
 #define WARNING_D 60
 #define SAFE_D 70
 
@@ -35,6 +35,7 @@
 // MESSAGE EXCHANGE
 #define MAX_OUT_QUEUE 3
 #define TIMEOUT 64
+#define GAME_TIMEOUT 1500
 #define DATA_LIFETIME 48
 
 // -- MESSAGE CODES --
@@ -150,6 +151,8 @@ typedef struct {
     msg_flood_state_t game_msg_state;       // Flooding message state
     uint8_t runner_color;                  // The runner's color, chosen by the witch
     //uint8_t standby_flag;                   // is True when the standby timer is finished!
+    uint8_t my_role;
+
     // Put variables here
 
     /*** *** *** ***/
@@ -176,8 +179,7 @@ typedef struct {
 
     /*** MOVEMENT ***/
 
-    uint8_t my_role;
-    runner_t runner;
+    runner_t runner;                            // structure containing all the infos about the current runner
 
     /*** *** *** ***/
 

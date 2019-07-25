@@ -12,13 +12,7 @@ extern USERDATA * mydata;
 void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
     // setup global variables
-    if(kilo_uid == 0){
-      	mydata->my_role == WITCH;
-    	return;
-    } else if(mydata->my_color == mydata->runner_color){
-    	mydata->my_role = RUNNER;
-    } else {
-    	mydata->my_role = CATCHER;
+    if(mydata->my_role == CATCHER){
     	mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
     }
  }
@@ -27,9 +21,9 @@ void setupMovementManager(){
 /*** CORE FUNCTIONS ***/
 
 /*
- It moves the kilobot depending on its role
+ It moves the kilobot depending on its role and checks if it is winner
  */
-void movementManager(){
+uint8_t movementManager(){
 	if(waitTime(MOVE_C, 100)){
 		uint8_t myrole = mydata->my_role;
     	if(myrole == RUNNER){
@@ -41,7 +35,8 @@ void movementManager(){
     
     	//update();
 	}
-	avoidCollisions();
+	uint8_t collision = avoidCollisions();
+  return checkIfWinner(collision);
 }
 
 void setMotion(motion_t new_motion){
@@ -118,10 +113,12 @@ uint8_t collisionDetected(){
 	return ret;
 }
 
-void avoidCollisions(){
+uint8_t avoidCollisions(){
 	if(collisionDetected()){		// DANGER AREA --> STOP	
     	setMotion(STOP);
+      return TRUE;
 	}
+  return FALSE;
 }
 
 void updateRunnerInfo(){
@@ -154,4 +151,21 @@ void updateDistance(uint8_t myrunner){
 	}else{
 		mydata->runner = (runner_t){-1, MAX_INT, MAX_INT, 0, 0};
 	}
+}
+
+uint8_t checkIfWinner(uint8_t collision) {
+
+  if(mydata->my_role == RUNNER) {
+    // if the runner gets caught it loses
+    if (collision){
+      return FALSE;
+    }
+  }else if (mydata->my_role == CATCHER) {
+    // if the catcher has caught the runner it wins
+    if (mydata->runner.runner_id != -1 && mydata->runner.last_distance < DANGER_D){
+      return TRUE;
+    }
+  }
+  // Otherwise the game is going on
+  return -1;
 }
