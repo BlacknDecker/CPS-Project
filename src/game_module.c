@@ -130,17 +130,76 @@ game_state_t floodPhase(){
 
 game_state_t gamephase(){
 
+	setupMovementManager();
+
 	if(kilo_uid == 0){
 		return END_PHASE;
 	}
 	if (mydata->my_role == RUNNER){
-  	pingMessage(RUNNER_MSG);
-	  return GAME_PHASE;
-	} else if (mydata->my_role == CATCHER){
-		pingMessage(CATCHER_MSG);
+ 		pingMessage(RUNNER_MSG);}
+ 	if (mydata->my_role == CATCHER){
+		pingMessage(CATCHER_MSG);}
+
+	mydata->bot_state =  movementManager();
+
+	if (mydata->bot_state == FALSE){
+		return LOSE_PHASE;
+	}
+	else if (mydata->bot_state == TRUE){
+		return WIN_PHASE;
+	}
+
+	else if (mydata->bot_state == -1) {
 		return GAME_PHASE;
 	}
-}
+
+
+
+ 	 //DONT REMOVE THESE COMMENTS!
+	 //DONT REMOVE THESE COMMENTS!
+	 //DONT REMOVE THESE COMMENTS!
+	 //DONT REMOVE THESE COMMENTS!
+
+	// if (mydata->my_role == RUNNER){
+ //  		pingMessage(RUNNER_MSG);
+  		
+ //  		mydata->bot_state =  movementManager();
+ //  			if (mydata->bot_state != FALSE && mydata->bot_state != -1 ){
+ //  				printf("# the bot number %d -Has WON Proudly! \n", kilo_uid);
+ //  				return WIN_PHASE;
+ //  			}
+ //  			if (mydata->bot_state == FALSE){
+ //  				printf("# the bot number %d -Has LOST Shamefully! \n", kilo_uid);
+ //  				return LOSE_PHASE;
+ //  			}
+
+  		
+	//   return GAME_PHASE;
+	// }
+
+	// else if (mydata->my_role == CATCHER){
+	// 	pingMessage(CATCHER_MSG);
+	// 	mydata->bot_state =  movementManager();
+	// 	if ( mydata->bot_state = TRUE){
+	// 		printf("# the bot number %d -Has WON Proudly! \n", kilo_uid);
+	// 		return WIN_PHASE;
+	// 	}
+	// 	}
+
+	// 	if(mydata->bot_state != TRUE && mydata->bot_state != -1){
+
+	// 		return STANDBY_PHASE;
+	// 	}
+
+	// 	return GAME_PHASE;
+
+	 //DONT REMOVE THESE COMMENTS!
+	 //DONT REMOVE THESE COMMENTS!
+	 //DONT REMOVE THESE COMMENTS!
+	 //DONT REMOVE THESE COMMENTS!
+
+	}
+
 
 game_state_t winphase(){
 	if(kilo_uid == 0){
@@ -148,7 +207,6 @@ game_state_t winphase(){
 	}
 	else{						// the bot blinks green as it wins
 		blink(16, 32, GREEN);
-		printf("kilobot %d WINS%d\n", kilo_uid);
 		return WIN_PHASE;
 	}
 }

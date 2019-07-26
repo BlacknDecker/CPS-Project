@@ -24,7 +24,7 @@ void setupMovementManager(){
  It moves the kilobot depending on its role and checks if it is winner
  */
 uint8_t movementManager(){
-	if(waitTime(MOVE_C, 100)){
+	if(waitTime(MOVE_C, 200)){
 		uint8_t myrole = mydata->my_role;
     	if(myrole == RUNNER){
     		run();

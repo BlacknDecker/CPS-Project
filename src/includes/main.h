@@ -152,6 +152,7 @@ typedef struct {
     uint8_t runner_color;                  // The runner's color, chosen by the witch
     //uint8_t standby_flag;                   // is True when the standby timer is finished!
     uint8_t my_role;
+    uint8_t bot_state;                      // State of the bot movementmanager
 
     // Put variables here
 
