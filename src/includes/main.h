@@ -20,6 +20,7 @@
 #define CYAN RGB(0,1,1)
 
 // DISTANCE ZONEs
+#define WIN_D 50
 #define DANGER_D 40
 #define WARNING_D 60
 #define SAFE_D 70
