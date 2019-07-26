@@ -13,6 +13,7 @@ void setupMovementManager(){
 	printf("setupMovementManager\n");   // Stub
   // setup global variables
   mydata->collision = FALSE;
+  mydata->collided_with = 255;
   runnerInfoSetup();
  }
 
@@ -23,15 +24,15 @@ void setupMovementManager(){
  It moves the kilobot depending on its role and checks if it is winner
  */
 void movementManager(){
-    if(mydata->play==FALSE || mydata->collision==TRUE){
-      stop();
-    } else if(mydata->my_role == RUNNER){
-  		run();
-  	} else if(mydata->my_role == CATCHER){
-  		updateRunnerInfo();
-  		searchAndCatch();
-  	}
-	avoidCollisions();
+  if(mydata->play==FALSE || mydata->collision==TRUE){
+    stop();
+  } else if(mydata->my_role == RUNNER){
+		run();
+	} else if(mydata->my_role == CATCHER){
+		updateRunnerInfo();
+		searchAndCatch();
+	}
+  avoidCollisions();
   checkIfWinner();
 }
 
@@ -89,13 +90,11 @@ void run(){
 }
 
 void searchAndCatch(){
-
   if(mydata->runner.in_range == 0){    // the runner is out of range
     moveRandomly();
   } else{                              // the runner is in range
     follow();
   }              
-
 }
 
 // if the runner is getting far, the catcher changes direction
@@ -117,8 +116,13 @@ uint8_t collisionDetected(){
 	uint8_t ret = FALSE;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){
 		if(mydata->distance[i] <= DANGER_D){
-       // printf("> %d - my distance from %d is: %d\n", kilo_uid, i, mydata->distance[i]);
+      mydata->collision = TRUE;
+      if(mydata->msg_payload[i] != mydata->my_role){
+        mydata->collided_with = mydata->msg_payload[i];
+      }
+      //printf("> bot %d collided with role %d\n", kilo_uid, mydata->collided_with);
 			ret = TRUE;
+      // printf("> %d - my distance from %d is: %d\n", kilo_uid, i, mydata->distance[i]);
 		}
 	}
 	return ret;
@@ -127,7 +131,6 @@ uint8_t collisionDetected(){
 void avoidCollisions(){
 	if(collisionDetected()){		// DANGER AREA --> STOP	
     	setMotion(STOP);
-      mydata->collision = TRUE;
 	}
 }
 
@@ -171,13 +174,13 @@ void checkIfWinner() {
   if(mydata->my_role == RUNNER) {
     // if the runner gets caught it loses
     //printf("I am runner %d\n", kilo_uid);
-    if (mydata->collision && mydata->last_msg_payload==CATCHER){
+    if (mydata->collision && mydata->collided_with==CATCHER){
       mydata->game_status = LOSER;
     }
   }else if (mydata->my_role == CATCHER) {
+    //printf("> kilo %d collision=%d myrunner=%d runner_distance=%d\n", kilo_uid, mydata->collision, mydata->runner.runner_id, mydata->runner.last_distance);
     // if the catcher has caught the runner it wins
-    printf("> kilo %d collision=%d myrunner=%d runner_distance=%d\n", kilo_uid, mydata->collision, mydata->runner.runner_id, mydata->runner.last_distance);
-    if (mydata->collision && mydata->runner.runner_id != 255 && mydata->runner.last_distance <= WIN_D){
+    if (mydata->collision && mydata->collided_with==RUNNER){
       mydata->game_status = WINNER;
     }
   }

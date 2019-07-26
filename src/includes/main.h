@@ -20,7 +20,6 @@
 #define CYAN RGB(0,1,1)
 
 // DISTANCE ZONEs
-#define WIN_D 50
 #define DANGER_D 40
 #define WARNING_D 60
 #define SAFE_D 70
@@ -183,6 +182,7 @@ typedef struct {
 
     /*** MOVEMENT ***/
     uint8_t collision;                          // flag
+    uint8_t collided_with;                      // cointains the role of the collided bot. 255 if the bot ended the game
     runner_t runner;                            // structure containing all the infos about the current runner
 
     /*** *** *** ***/

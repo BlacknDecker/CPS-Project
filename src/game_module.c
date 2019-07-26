@@ -33,7 +33,6 @@ void gameManager(){
 	    case GAME_PHASE: mydata->game_state = gamephase(); break;
 	    case WIN_PHASE: mydata->game_state = winphase(); break;
 	    case LOSE_PHASE: mydata->game_state = losephase(); break;
-		case STANDBY_PHASE: mydata->game_state = standbyphase(); break;
 	    case END_PHASE:   mydata->game_state = endPhase();	break;
 
 	}
@@ -149,6 +148,7 @@ game_state_t gamephase(){
 
 game_state_t winphase(){
 	setMotion(STOP);
+	setupPinging();
 	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
 	mydata->play = FALSE;	// stops the kilobot
 	blink(16, 32, GREEN);	// the bot blinks green as it wins
@@ -157,43 +157,16 @@ game_state_t winphase(){
 
 game_state_t losephase(){
 	setMotion(STOP);
+	setupPinging();
 	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
 	mydata->play = FALSE;	// stops the kilobot
 	blink(16, 32, WHITE);     // the bot blinks white, as waving the flag of surrender! the white flag!
 	return LOSE_PHASE;
 }
 
-game_state_t standbyphase(){
-	if(kilo_uid == 0){ return END_PHASE; }  // Witch
- 	if (mydata->my_role == RUNNER){         // if the runner is in the standbyphase and 
-		if(waitTime(GAME_C, 300)){		        // Waits for time to run out		
-			if(mydata->new_message_arrived == TRUE && mydata->last_msg_payload == CATCHER_MSG){  //checks to see if a meaningful message has arrived or not if true
-				mydata->new_message_arrived = FALSE;												// resets the new msg flag
-				return GAME_PHASE;																	// goes back to the game phasse
-			}
-			else {
-				printf("# the bot number %d -Has WON Proudly! \n", kilo_uid);
-				return WIN_PHASE;																	// if lost for a long time moves to win phase!
-			}
-		}
-	}
-	if (mydata->my_role == CATCHER){
-		if(waitTime(GAME_C, 300)){		// Waits for time to run out
-			if(mydata->new_message_arrived == TRUE && mydata->last_msg_payload == RUNNER_MSG){ //checks to see if a meaningful message has arrived or not if true
-				mydata->new_message_arrived = FALSE;											// resets the new msg flag
-				return GAME_PHASE;																// goes back to the game phasse
-			}
-			else {
-				printf("# the bot number %d -Has LOST Shamefully! \n", kilo_uid);			
-				return LOSE_PHASE;																// if lost for a long time moves to lose phase!
-			}
-		}
-	}
-
-}
-
 game_state_t endPhase(){
 	blink(16,32,mydata->runner_color); // the witch blinks the color of the runners
+	setupPinging();
 	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
 	return END_PHASE;
 }
