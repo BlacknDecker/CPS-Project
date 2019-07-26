@@ -67,7 +67,7 @@ game_state_t waitPhase(){
 			mydata->game_msg_state = START;  // Setup flooding
 			//mydata->random_color = getRandomColor();	//Choose a random color
 	    mydata->runner_color = numberToColor(getRandomNumber(3,8)); //picking a color as the runner to flood it.
-	    printf("WITCH ---------------------------%d\n", mydata->runner_color);
+	    printf("Witch says color %d\n", mydata->runner_color);
       return FLOOD_PHASE;
 		}else{
 			return WAIT_PHASE;
@@ -77,14 +77,14 @@ game_state_t waitPhase(){
 			mydata->new_message_arrived = FALSE;	// Reset variable
 			if(mydata->last_msg_payload >= BLUE_MSG || mydata->last_msg_payload <= CYAN_MSG){					// Set received color
 				mydata->runner_color = getColorFromMessage(mydata->last_msg_payload); // saves the color of the runner
-				printf("> %d: RECEIVED COLOR CODE:%d!\n", kilo_uid, mydata->runner_color); // DEBUG
+				//printf("> %d: RECEIVED COLOR CODE:%d!\n", kilo_uid, mydata->runner_color); // DEBUG
 				if (mydata->my_color == mydata->runner_color){       // Bot sets its self as runner if it has the same color as the picked color by the witch!
 					mydata->my_role = RUNNER; //Updates its role as the Runner
-					printf("I am runner %d\n", kilo_uid);
+					printf("> %d: I am a runner!\n", kilo_uid);
 				}  
 				else if  (kilo_uid != 0 && mydata->my_color != mydata->runner_color) {
 					mydata->my_role = CATCHER; //Updates its role as catcher
-					printf("I am catcher %d\n", kilo_uid);
+					printf("> %d: I am a catcher!\n", kilo_uid);
 
 				}
 

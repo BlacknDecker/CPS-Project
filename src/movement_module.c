@@ -23,16 +23,14 @@ void setupMovementManager(){
  It moves the kilobot depending on its role and checks if it is winner
  */
 void movementManager(){
-	if(waitTime(MOVE_C, 100)){
     if(mydata->play==FALSE || mydata->collision==TRUE){
-      setMotion(STOP);
+      stop();
     } else if(mydata->my_role == RUNNER){
   		run();
   	} else if(mydata->my_role == CATCHER){
   		updateRunnerInfo();
   		searchAndCatch();
   	}
-	}
 	avoidCollisions();
   checkIfWinner();
 }
@@ -54,6 +52,10 @@ void setMotion(motion_t new_motion){
   }
 }
 
+void stop(){
+  setMotion(STOP);
+}
+
 void runnerInfoSetup(){
   mydata->runner.runner_id = 255;
   mydata->runner.last_distance = MAX_INT;
@@ -63,8 +65,9 @@ void runnerInfoSetup(){
 }
 
 void moveRandomly(){
-  uint8_t random = rand_soft() % 3; // 0 <= random < 3
-  switch(random){
+  if(waitTime(MOVE_C, 100)){
+    uint8_t random = rand_soft() % 3; // 0 <= random < 3
+    switch(random){
       case 0:
         setMotion(LEFT); break;
       case 1:
@@ -72,6 +75,7 @@ void moveRandomly(){
       case 2:
         setMotion(RIGHT); break;
     }
+  }
 }
 
 // insert functions that exposes services to the other modules here
@@ -172,7 +176,8 @@ void checkIfWinner() {
     }
   }else if (mydata->my_role == CATCHER) {
     // if the catcher has caught the runner it wins
-    if (mydata->collision && mydata->runner.runner_id != 255 && mydata->runner.last_distance < DANGER_D){
+    printf("> kilo %d collision=%d myrunner=%d runner_distance=%d\n", kilo_uid, mydata->collision, mydata->runner.runner_id, mydata->runner.last_distance);
+    if (mydata->collision && mydata->runner.runner_id != 255 && mydata->runner.last_distance <= WIN_D){
       mydata->game_status = WINNER;
     }
   }

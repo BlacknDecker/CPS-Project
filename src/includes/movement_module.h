@@ -4,6 +4,7 @@
 void setupMovementManager();    		// Setups global variables used by this module.
 void movementManager();         		// Makes the kilobot move depending on its roles and checks if it is winner
 void setMotion(motion_t new_motion);	// sets the motors pf the kilobot
+void stop();
 void runnerInfoSetup();
 void moveRandomly();					// makes the kilobot moving randomly
 
