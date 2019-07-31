@@ -38,7 +38,8 @@
 // MESSAGE EXCHANGE
 #define MAX_OUT_QUEUE 3
 #define TIMEOUT 64
-#define GAME_TIMEOUT 30
+#define GAME_TIMEOUT MAX_INT
+#define GAME_ROUNDS 5
 #define DATA_LIFETIME 48
 
 // -- MESSAGE CODES --
@@ -109,7 +110,6 @@ typedef enum{
     WIN_PHASE,
     LOSE_PHASE,
     GAME_PHASE,
-    STANDBY_PHASE,
     END_PHASE
 } game_state_t;
 
@@ -151,6 +151,7 @@ typedef struct {
     /*** GAME ***/
 
     game_state_t game_state;                // Game state
+    uint8_t gameRound;
     msg_flood_state_t game_msg_state;       // Flooding message state
     uint8_t runner_color;                  // The runner's color, chosen by the witch
     //uint8_t standby_flag;                   // is True when the standby timer is finished!

@@ -18,7 +18,7 @@ void setupColors(){
 /*** CORE FUNCTIONS ***/
 
 void setColor(uint8_t rgbColor){
-	if(rgbColor != OFF){
+	if((rgbColor) !=(OFF) ){
 		mydata->my_color = rgbColor;	// Update variable	
 	}
 	set_color(rgbColor);			// Actually set the color
@@ -101,6 +101,16 @@ uint8_t colorToMessage(uint8_t rgbColor){
 		}
 }
 
+char* colorToString(uint8_t rgbColor){
+		switch(rgbColor){
+		case BLUE: return "Blue";
+		case PURPLE: return "Purple";
+		case YELLOW: return "Yellow";
+		case ORANGE: return "Orange";
+		case CYAN: return "Cyan";
+		default: return "None";
+	}
+}
 
 // Get a random number between "from" to "to"
 uint8_t getRandomNumber(uint8_t from,uint8_t to){
@@ -111,12 +121,3 @@ uint8_t getRandomNumber(uint8_t from,uint8_t to){
 	rand_code = (rand_code % from)+to;
   return rand_code;
 }
-
-// insert functions that exposes services to the other modules here
-// Don't forget to update the header file!
-
-
-/*** SUPPORT FUNCTIONS ***/
-
-// insert support ("private") functions here
-

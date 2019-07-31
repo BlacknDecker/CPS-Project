@@ -10,10 +10,8 @@ extern USERDATA * mydata;
 /***  SETUP ***/
 
 void setupMovementManager(){
-	printf("setupMovementManager\n");   // Stub
-  // setup global variables
   mydata->collision = FALSE;
-  mydata->collided_with = 255;
+  mydata->collided_with = MAX_INT;
   runnerInfoSetup();
  }
 
@@ -58,7 +56,7 @@ void stop(){
 }
 
 void runnerInfoSetup(){
-  mydata->runner.runner_id = 255;
+  mydata->runner.runner_id = MAX_INT;
   mydata->runner.last_distance = MAX_INT;
   mydata->runner.new_distance = MAX_INT;
   mydata->runner.last_direction = 0;
@@ -116,13 +114,12 @@ uint8_t collisionDetected(){
 	uint8_t ret = FALSE;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){
 		if(mydata->distance[i] <= DANGER_D){
-      mydata->collision = TRUE;
-      if(mydata->msg_payload[i] != mydata->my_role){
-        mydata->collided_with = mydata->msg_payload[i];
-      }
-      //printf("> bot %d collided with role %d\n", kilo_uid, mydata->collided_with);
+		    mydata->collision = TRUE;
+		    mydata->collided_with = mydata->msg_payload[i];
+		    if(mydata->collided_with != mydata->my_role){
+		      return TRUE;
+		    }
 			ret = TRUE;
-      // printf("> %d - my distance from %d is: %d\n", kilo_uid, i, mydata->distance[i]);
 		}
 	}
 	return ret;
@@ -136,7 +133,7 @@ void avoidCollisions(){
 
 void updateRunnerInfo(){
 	uint8_t myrunner = mydata->runner.runner_id;
-	if( myrunner == 255){
+	if( myrunner == MAX_INT){
 		lookForARunner();
 	}else{
 		updateDistance(myrunner);
@@ -144,7 +141,7 @@ void updateRunnerInfo(){
 }
 
 void lookForARunner(){
-	uint8_t myrunner = 255;
+	uint8_t myrunner = MAX_INT;
 	uint8_t d = MAX_INT;
 	for(int i=0; i<MAX_NEIGHBOURS; i++){ 
 		if(mydata->distance[i]<d && mydata->msg_payload[i]==RUNNER){	// the msg_payload contains the role of the bot in the game phase

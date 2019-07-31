@@ -229,12 +229,12 @@ void checkExpiredData(){
     for(int i=0; i<MAX_NEIGHBOURS; i++){
         if(mydata->neighbours[i]){                      // Check only neighbours
             if(isExpired(&mydata->msg_lifetime[i])){    // If data have lifetime has reached the end -> reset!
-                if(kilo_uid==0){ printf("> %d: My neighbour %d is expired -> lifetime: %d\n", kilo_uid, i, mydata->msg_lifetime[i]); } // DEBUG
+                //if(kilo_uid==0){ printf("> %d: My neighbour %d is expired -> lifetime: %d\n", kilo_uid, i, mydata->msg_lifetime[i]); } // DEBUG
                 mydata->neighbours[i]   = FALSE;
                 mydata->distance[i]     = MAX_INT;
                 mydata->msg_payload[i]  = VOID_MSG;
-                if(kilo_uid==0){ printf("Updated neighbours list: "); }                         // DEBUG
-                if(kilo_uid==0){ printNeighbourList(); }                                        // DEBUG          
+                //if(kilo_uid==0){ printf("Updated neighbours list: "); }                         // DEBUG
+                //if(kilo_uid==0){ printNeighbourList(); }                                        // DEBUG          
             }
         }
     }

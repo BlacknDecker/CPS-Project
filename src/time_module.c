@@ -51,14 +51,3 @@ uint8_t waitTime(uint8_t clock, uint8_t kiloTicks){
 void resetClock(uint8_t clock){
 	mydata->timer[clock] = 0;
 }
-
-
-
-// insert functions that exposes services to the other modules here
-// Don't forget to update the header file!
-
-
-/*** SUPPORT FUNCTIONS ***/
-
-// insert support ("private") functions here
-

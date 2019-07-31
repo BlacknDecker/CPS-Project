@@ -2,6 +2,7 @@
 #include "includes/main.h"
 #include "includes/color_module.h"
 #include "includes/communication_module.h"
+#include "includes/movement_module.h"
 #include "includes/time_module.h"
 #include "includes/game_module.h"
 
@@ -11,11 +12,11 @@ extern USERDATA * mydata;
 /***  SETUP ***/
 
 void setupGameManager(){
-	printf("SetupGameManager\n"); //Stub
 	mydata->game_state = START_PHASE;
 	mydata->game_msg_state = START;
     mydata->game_status = PLAYING;
     mydata->play = FALSE;
+    mydata->gameRound = 0;
 }
 
 
@@ -34,7 +35,6 @@ void gameManager(){
 	    case WIN_PHASE: mydata->game_state = winphase(); break;
 	    case LOSE_PHASE: mydata->game_state = losephase(); break;
 	    case END_PHASE:   mydata->game_state = endPhase();	break;
-
 	}
 }
 
@@ -52,7 +52,7 @@ game_state_t startPhase(){
 		uint8_t randomGeneratedNumber = getRandomNumber(3,8);
 		mydata->my_color= numberToColor(randomGeneratedNumber);
 		setColor(mydata->my_color);
-		printf("> Bot Number %d - (1) Started! Picked Color Code: %d  \n" ,kilo_uid, randomGeneratedNumber); // DEBUG
+		printf("> %d - Started! Picked Color: %s  \n" ,kilo_uid, colorToString(mydata->my_color)); // DEBUG
 	}
 	return WAIT_PHASE;
 }
@@ -61,13 +61,12 @@ game_state_t waitPhase(){
 	if(kilo_uid == 0){					// Coordinator
 		blink(16, 32, WHITE);
 		if(waitTime(GAME_C, 10)){		// Wait 5 sec
-			printf("> %d - (2) WAIT End. Flood!\n", kilo_uid); // DEBUG
 			setStableColor(WHITE);			 // Set a stable color and move on the next phase
 			mydata->game_msg_state = START;  // Setup flooding
-			//mydata->random_color = getRandomColor();	//Choose a random color
-	    mydata->runner_color = numberToColor(getRandomNumber(3,8)); //picking a color as the runner to flood it.
-	    printf("Witch says color %d\n", mydata->runner_color);
-      return FLOOD_PHASE;
+			uint8_t random_color = getRandomNumber(3,8);
+		    mydata->runner_color = numberToColor(random_color); //picking a color as the runner to flood it.
+		    printf("WITCH SAYS COLOR %s\n", colorToString(mydata->runner_color));
+	      	return FLOOD_PHASE;
 		}else{
 			return WAIT_PHASE;
 		}
@@ -100,7 +99,7 @@ game_state_t floodPhase(){
 	if(kilo_uid == 0){									// Coordinator
 		floodMessage(colorToMessage(mydata->runner_color), &mydata->game_msg_state);	// Flood a message with a color
 		if(mydata->game_msg_state == FINISH){
-			printf("> %d - (3)  Ended Flooding\n", kilo_uid);
+			printf("> %d: Ended Flooding\n", kilo_uid);
 			blink(16, 32, mydata->runner_color);		// the witch blinks the color of the runners
 			return END_PHASE;							// When finished flooding moves to the next phase
 		}
@@ -108,19 +107,10 @@ game_state_t floodPhase(){
 	} else {											// All the others
 		blink(16, 8, mydata->my_color);
 		floodMessage(colorToMessage(mydata->runner_color), &mydata->game_msg_state);	// Flood the color received
-		/*
-		if(kilo_uid == 1){ 
-	        printf(" 	> FLOODING PROGRESS - COMM CLOCK: %d\n", mydata->timer[COMMUNICATION_C]);
-	        printf("    > GAME STATE: %d\n", mydata->game_state);
-	        printf("    > FLOOD STATE:%d\n", mydata->game_msg_state);
-	        printf("    > MSGEX STATE:%d\n", mydata->msg_ex_state);
-	        printf("    > OUT QUEUE:  %d | %d | %d\n", mydata->out_queue[0],mydata->out_queue[1],mydata->out_queue[2]);
-	        printf("    > OUT MESSAGE:%d\n", getMessagePayload(mydata->outgoing_message));
-	    }
-	    */
 		if(mydata->game_msg_state == FINISH){
 			printf("> %d: Ended Flooding\n", kilo_uid);
 			flushLastMsgPayload();
+			resetClock(GAME_C);
 			return GAME_PHASE;							// When finished flooding moves to the next phase
 		}
 		return FLOOD_PHASE;
@@ -132,44 +122,68 @@ game_state_t gamephase(){
 	if(kilo_uid == 0){
 		return END_PHASE;
 	}
-	setStableColor(mydata->my_color);
-	mydata->play = TRUE;
-	setupPinging();
-	pingMessage(mydata->my_role);
-	if (mydata->game_status == WINNER){
-		printf("kilobot %d WINS\n", kilo_uid);
-		return WIN_PHASE;
-	} else if (mydata->game_status == LOSER) {
-		printf("kilobot %d LOSES\n", kilo_uid);
-		return LOSE_PHASE;
+	if(gameTimerElapsed()==FALSE){
+		setStableColor(mydata->my_color);
+		mydata->play = TRUE;
+		setupPinging();
+		pingMessage(mydata->my_role);
+		if (mydata->game_status == WINNER){
+			printf("> %d WINS\n", kilo_uid);
+			resetClock(GAME_C);
+			return WIN_PHASE;
+		} else if (mydata->game_status == LOSER) {
+			resetClock(GAME_C);
+			printf("> %d LOSES\n", kilo_uid);
+			return LOSE_PHASE;
+		}else{
+			return GAME_PHASE;
+		}
+	}else{
+		resetClock(GAME_C);
+		if(mydata->my_role==CATCHER){
+			printf("> %d LOSES - game timeout elapsed\n", kilo_uid);
+			return LOSE_PHASE;
+		} else {
+			printf("> %d WINS - game timeout elapsed\n", kilo_uid);
+			return WIN_PHASE;
+		}
 	}
-	return GAME_PHASE;
+}
+
+uint8_t gameTimerElapsed(){
+	uint8_t timeout_elapsed = waitTime(GAME_C, GAME_TIMEOUT);
+	if(timeout_elapsed==0 && mydata->gameRound==GAME_ROUNDS){
+		return TRUE;
+	}else if(timeout_elapsed==1){
+		resetClock(GAME_C);
+		mydata->gameRound = mydata->gameRound+1;
+		return FALSE;
+	}
+	return FALSE;
 }
 
 game_state_t winphase(){
-	setMotion(STOP);
-	setupPinging();
-	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
-	mydata->play = FALSE;	// stops the kilobot
+	stopTheGame();
+	pingMessage(mydata->my_role);
 	blink(16, 32, GREEN);	// the bot blinks green as it wins
 	return WIN_PHASE;
 }
 
 game_state_t losephase(){
-	setMotion(STOP);
-	setupPinging();
-	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
-	mydata->play = FALSE;	// stops the kilobot
+	stopTheGame();
+	pingMessage(mydata->my_role);
 	blink(16, 32, WHITE);     // the bot blinks white, as waving the flag of surrender! the white flag!
 	return LOSE_PHASE;
+}
+
+void stopTheGame(){
+	setMotion(STOP);
+	mydata->play = FALSE;	// stops the kilobot
 }
 
 game_state_t endPhase(){
 	blink(16,32,mydata->runner_color); // the witch blinks the color of the runners
 	setupPinging();
-	pingMessage(255);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
+	pingMessage(0);		// notifies the other kilobots to avoid collisions, but telling that it's out of the game
 	return END_PHASE;
 }
-
-// insert support ("private") functions here
-
